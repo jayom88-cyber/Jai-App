@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "jay-bonilla-matrix"
+  },
+  "targets": {
+    "jay-bonilla-matrix": {
+      "hosting": {
+        "jai-app": [
+          "jai-core-alpha"
+        ]
+      }
+    }
+  }
+}
