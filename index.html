@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant</title>
-    <!-- Tailwind CDN activated for immediate Firebase field-testing -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Compiled Tailwind CSS local build reference -->
+    <link href="./output.css" rel="stylesheet">
     <style>
         /* =========================================================================
            CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
@@ -702,3 +702,86 @@
             }
 
             function updateUIState(state) {
+                ttsState = state;
+                if (state === 'playing') {
+                    playIcon.innerText = "⏸";
+                    playText.innerText = "Pause Sync";
+                    statusDisplay.innerText = "TRANSMITTING";
+                    statusDisplay.className = "text-[10px] font-bold text-teal-400 uppercase animate-pulse";
+                    runVisualizer(true);
+                } else if (state === 'paused') {
+                    playIcon.innerText = "▶";
+                    playText.innerText = "Resume Sync";
+                    statusDisplay.innerText = "PAUSED";
+                    statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
+                    runVisualizer(false);
+                } else {
+                    playIcon.innerText = "▶";
+                    playText.innerText = "Initialize";
+                    statusDisplay.innerText = "IDLE";
+                    statusDisplay.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest";
+                    runVisualizer(false);
+                }
+            }
+
+            function processChunks() {
+                if (currentChunks.length === 0) {
+                    updateUIState('idle');
+                    return;
+                }
+                
+                const text = currentChunks.shift();
+                currentUtterance = createUtterance(text);
+                
+                currentUtterance.onend = () => {
+                    if (ttsState === 'playing') {
+                        processChunks();
+                    }
+                };
+                
+                currentUtterance.onerror = (e) => {
+                    console.error("TTS Error:", e);
+                    updateUIState('idle');
+                };
+
+                speechSynthesis.speak(currentUtterance);
+            }
+
+            playBtn.addEventListener('click', () => {
+                if (ttsState === 'playing') {
+                    speechSynthesis.pause();
+                    updateUIState('paused');
+                    return;
+                }
+                
+                if (ttsState === 'paused') {
+                    speechSynthesis.resume();
+                    updateUIState('playing');
+                    return;
+                }
+
+                const text = ttsInput.value.trim();
+                if (!text) return;
+
+                speechSynthesis.cancel();
+                currentChunks = breakTextIntoChunks(text);
+                if(currentChunks.length === 0) return;
+
+                updateUIState('playing');
+                processChunks();
+            });
+
+            stopBtn.addEventListener('click', () => {
+                speechSynthesis.cancel();
+                updateUIState('idle');
+            });
+
+            ['rate','pitch','volume'].forEach(id => {
+                const slider = document.getElementById(id);
+                const val = document.getElementById(id + '-val');
+                slider.addEventListener('input', () => val.textContent = parseFloat(slider.value).toFixed(2));
+            });
+        });
+    </script>
+</body>
+</html>
