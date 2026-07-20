@@ -7,9 +7,9 @@
     <!-- Tailwind CDN activated for immediate Firebase field-testing -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* =========================================================================
+        /* ==========================================================================
            CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
-           ========================================================================= */
+           ========================================================================== */
         :root {
             --bg-color: #020208;
             --surface-bg: rgba(8, 8, 24, 0.65);
@@ -19,6 +19,8 @@
             --accent-glow: rgba(0, 255, 255, 0.45);
             --galaxy-glow-1: rgba(26, 21, 60, 0.5);
             --galaxy-glow-2: rgba(0, 242, 254, 0.2);
+            --font-scale-p: 0.875rem;
+            --font-scale-h3: 1rem;
             --glow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
@@ -46,6 +48,7 @@
             --glow-glass: 0 8px 32px 0 rgba(100, 116, 139, 0.05);
         }
 
+        /* Hardware Accelerated Reset & Base Layout */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body, main, div, button, img {
@@ -71,10 +74,14 @@
             -webkit-backdrop-filter: blur(20px);
         }
 
+        /* Custom Scrollbar for Inner Containers */
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
 
+        /* ==========================================================================
+           VISUAL BACKGROUND FX (PROCEDURAL GALAXY VORTEX)
+           ========================================================================== */
         @keyframes galaxyRotate {
             0% { transform: translate3d(-50%, -50%, 0) rotate(0deg) scale3d(1, 1, 1); }
             50% { transform: translate3d(-50%, -50%, 0) rotate(180deg) scale3d(1.1, 1.1, 1); }
@@ -87,10 +94,31 @@
             animation: galaxyRotate 60s linear infinite;
             background: 
                 radial-gradient(circle at 50% 50%, var(--galaxy-glow-1) 0%, transparent 50%),
-                radial-gradient(circle at 60% 60%, var(--galaxy-glow-2) 0%, transparent 60%);
+                radial-gradient(circle at 60% 60%, var(--galaxy-glow-2) 0%, transparent 60%),
+                radial-gradient(background-color, var(--bg-color) 10%, transparent 100%);
             filter: blur(40px);
         }
 
+        @keyframes shootingStar {
+            0% { transform: translate3d(0, 0, 0) rotate(45deg) scale(0); opacity: 0; }
+            5% { opacity: 1; }
+            10% { transform: translate3d(-1500px, 1500px, 0) rotate(45deg) scale(1); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        .shooting-star {
+            position: absolute; width: 120px; height: 2px;
+            background: linear-gradient(to left, rgba(0, 255, 255, 1), transparent);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 1;
+        }
+
+        .star-1 { top: 5%; right: 10%; animation: shootingStar 18s linear infinite 3s; }
+        .star-2 { top: 25%; right: -10%; animation: shootingStar 35s linear infinite 15s; }
+        .star-3 { top: 10%; right: 5%; animation: shootingStar 45s linear infinite 28s; }
+
+        /* ==========================================================================
+           RESPONSIVE GRID SYSTEM (MOBILE-FIRST)
+           ========================================================================== */
         .stage-container {
             flex: 1; width: 100%; max-width: 1400px; margin: 0 auto;
             display: grid; grid-template-columns: 320px 1fr; gap: 16px; padding: 16px; min-height: 0; z-index: 10;
@@ -105,19 +133,41 @@
         }
 
         @media (max-width: 992px) {
-            .stage-container { display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 20px; }
+            .stage-container { 
+                display: flex; 
+                flex-direction: column; 
+                overflow-y: auto; 
+                padding-bottom: 20px;
+            }
             main { order: 1; min-height: 60vh; flex: 0 0 auto; }
             aside { order: 2; margin-top: 16px; overflow: visible; }
         }
 
-        .avatar-lens { position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 280px; padding: 20px 0; z-index: 5; }
-        .skin-layer { position: absolute; max-height: 100%; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px; will-change: opacity, transform; transform: scale3d(0.95, 0.95, 1); pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease; }
+        /* ==========================================================================
+           AVATAR SANCTUARY & CSS HALO ANIMATION
+           ========================================================================== */
+        .avatar-lens { 
+            position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; 
+            min-height: 280px; 
+            padding: 20px 0;
+            z-index: 5;
+        }
+        .skin-layer {
+            position: absolute; max-height: 100%; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px;
+            will-change: opacity, transform; transform: scale3d(0.95, 0.95, 1); pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         
         @keyframes corePulse {
-            0%, 100% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) rgba(0, 255, 255, 0.3); }
-            50% { transform: scale3d(1.04, 1.04, 1); filter: drop-shadow(0 0 25px var(--accent-color)) brightness(1.15); }
+            0% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) drop-shadow(0 0 30px rgba(0, 255, 255, 0.3)); }
+            50% { transform: scale3d(1.04, 1.04, 1); filter: drop-shadow(0 0 25px var(--accent-color)) drop-shadow(0 0 60px rgba(0, 255, 255, 0.6)) brightness(1.15); }
+            100% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) drop-shadow(0 0 30px rgba(0, 255, 255, 0.3)); }
         }
-        .skin-layer.active { opacity: 1; z-index: 2; animation: corePulse 4s infinite; pointer-events: auto;}
+        
+        .skin-layer.active { opacity: 1; z-index: 2; animation: corePulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: auto;}
+
+        .magic-glow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.1); }
 
         .eq-matrix { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; margin-bottom: 16px; z-index: 10;}
         .eq-bar { width: 4px; height: 6px; background-color: var(--accent-color); border-radius: 2px; transition: height 0.075s linear; }
@@ -131,12 +181,15 @@
         .btn-pill-group { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;}
         .btn-pill { background: transparent; border: none; color: var(--text-color); opacity: 0.5; padding: 6px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;}
         .btn-pill.active { background: rgba(255, 255, 255, 0.15); color: var(--accent-color); opacity: 1; }
+        .btn-pill:hover { opacity: 0.8; }
         
         .status-tag { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
         .status-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; }
         .status-dot.active { animation: corePulse 1.5s infinite; } 
 
         footer { width: 100%; padding: 16px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; z-index: 30; border-top: 1px solid var(--border-color); gap: 16px; }
+        @media (max-width: 768px) { footer { justify-content: center; } }
+
         .btn-action-square { width: 44px; height: 44px; font-size: 1.2rem; border: 1px solid var(--border-color); background: rgba(0, 0, 0, 0.3); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-color); cursor: pointer;}
         
         .mic-active { animation: pulse-red 1.5s infinite; color: #ef4444 !important; border-color: #ef4444 !important; }
@@ -148,7 +201,7 @@
 
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--accent-color); cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px var(--accent-color); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 2px; }
     </style>
 </head>
 <body class="theme-dark">
@@ -179,24 +232,18 @@
             </div>
         </header>
 
-        <!-- PERSONALITY SELECTION ROW (Visual Assets Precede Logic) -->
-        <div class="w-full max-w-[1400px] mx-auto px-4 pt-4 z-20">
-            <div class="flex justify-center gap-3 flex-wrap bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                <button id="mode-short" class="mode-toggle-btn bg-indigo-600 text-white text-xs font-bold py-2 px-6 rounded-lg border border-indigo-500 transition-all shadow-[0_0_10px_rgba(79,110,229,0.3)]">Short & Punchy</button>
-                <button id="mode-philosopher" class="mode-toggle-btn bg-transparent text-slate-400 text-xs font-bold py-2 px-6 rounded-lg border border-slate-700 transition-all hover:text-white">Genius Philosopher</button>
-                <button id="mode-roast" class="mode-toggle-btn bg-transparent text-slate-400 text-xs font-bold py-2 px-6 rounded-lg border border-slate-700 transition-all hover:text-white">Comedic Roast</button>
-            </div>
-        </div>
-
         <div class="stage-container">
             <main class="glass-panel">
                 <div class="galaxy-stage" aria-hidden="true"></div>
+                <div class="shooting-star star-1" aria-hidden="true"></div>
+                <div class="shooting-star star-2" aria-hidden="true"></div>
+                <div class="shooting-star star-3" aria-hidden="true"></div>
 
                 <div class="avatar-lens" role="region" aria-label="AI Avatar Display">
-                    <img id="skin-neutral" src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" class="skin-layer active">
-                    <img id="skin-real" src="IMG_0296.jpg" alt="J Rio Realistic Avatar" class="skin-layer">
-                    <img id="skin-pixar" src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" class="skin-layer">
-                    <img id="skin-female" src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" class="skin-layer">
+                    <img id="skin-neutral" src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" class="skin-layer active" onerror="this.src='https://via.placeholder.com/400x500/0f172a/00ffff?text=Jai+Core'">
+                    <img id="skin-real" src="IMG_0296.jpg" alt="J Rio Realistic Avatar" class="skin-layer" onerror="this.src='https://via.placeholder.com/400x500/0f172a/00ffff?text=Jay+(Real)'">
+                    <img id="skin-pixar" src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" class="skin-layer" onerror="this.src='https://via.placeholder.com/400x500/0f172a/00ffff?text=File+Not+Found+Check+Spelling'">
+                    <img id="skin-female" src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" class="skin-layer" onerror="this.src='https://via.placeholder.com/400x500/0f172a/ff00ff?text=Female+Avatar'">
                 </div>
                 
                 <div class="eq-matrix" role="presentation" aria-hidden="true">
@@ -215,13 +262,13 @@
                         <label for="ai-prompt-input" class="sr-only">AI Prompt Input</label>
                         <textarea id="ai-prompt-input" class="w-full bg-slate-900/70 border border-slate-600 rounded-xl p-3 pb-10 text-sm h-20 focus:outline-none focus:border-teal-500 transition-colors text-slate-200 placeholder-slate-500 custom-scroll resize-none" placeholder="Ask Gemini (Thought Engine)..."></textarea>
                         
-                        <button id="prompt-speaker-btn" class="absolute bottom-2 left-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20" title="Read Prompt/Response Aloud">
+                        <button id="prompt-speaker-btn" class="absolute bottom-2 left-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20 magic-glow-hover" title="Read Prompt/Response Aloud">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5 10v4a2 2 0 002 2h2.586l3.293 3.293A1 1 0 0014 18.5V5.5a1 1 0 00-1.707-.707L9.586 8H7a2 2 0 00-2 2z" />
                             </svg>
                         </button>
 
-                        <button id="mic-btn" class="absolute bottom-2 right-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20" title="Hold/Click to Speak (STT)">
+                        <button id="mic-btn" class="absolute bottom-2 right-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20 magic-glow-hover" title="Hold/Click to Speak (STT)">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                             </svg>
@@ -235,6 +282,18 @@
             </main>
 
             <aside class="custom-scroll">
+                
+                <!-- NEW: SMILE APP OFFLINE ROUTING TOGGLES -->
+                <section class="glass-panel panel-card mb-4" aria-label="Logic Mode Matrix">
+                    <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Operation Mode</h2>
+                    <select id="logic-mode-select" class="w-full bg-slate-900/80 border border-slate-600 text-slate-300 text-xs rounded-lg p-2 outline-none mb-2 focus:border-indigo-400 cursor-pointer">
+                        <option value="cloud_api">Cloud (Gemini API)</option>
+                        <option value="short_punchy">Short & Punchy (Offline)</option>
+                        <option value="genius_philosopher">Genius-Philosopher (Offline)</option>
+                        <option value="comedic_roast">Comedic Roast (Offline)</option>
+                    </select>
+                </section>
+
                 <section class="glass-panel panel-card mb-4" aria-label="Sovereign Vault Information">
                     <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Sovereign Vault</h2>
                     <div class="flex items-center justify-between bg-black/40 border border-border-color rounded-xl p-3">
@@ -269,6 +328,14 @@
                             <option value="nah">Nahuatl (Indigenous)</option>
                             <option value="hi">हिंदी (Hindi)</option>
                             <option value="pt">Português (Portuguese)</option>
+                            <option value="fr">Français (French)</option>
+                            <option value="de">Deutsch (German)</option>
+                            <option value="it">Italiano (Italian)</option>
+                            <option value="zh">中文 (Mandarin)</option>
+                            <option value="ja">日本語 (Japanese)</option>
+                            <option value="ar">العربية (Arabic)</option>
+                            <option value="ru">Русский (Russian)</option>
+                            <option value="la">Latin (Fallback IT)</option>
                         </select>
                     </div>
 
@@ -277,7 +344,7 @@
                         <select id="voice-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all"></select>
                     </div>
 
-                    <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed text-emerald-300 font-mono" placeholder="Output script container..."></textarea>
+                    <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed text-emerald-300 font-mono" placeholder="Paste your raw script here, fetch from the databank, or inject Lexicon terms..."></textarea>
 
                     <div class="grid grid-cols-2 gap-3 mb-5">
                         <button id="play-btn" class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] active:scale-95 flex items-center justify-center gap-2">
@@ -306,7 +373,7 @@
             </aside>
         </div>
 
-        <footer class="glass-panel">
+        <footer class="glass-panel" role="contentinfo">
             <div class="btn-pill-group w-full md:w-auto mb-2 md:mb-0">
                 <button onclick="SystemApp.toggleSkin('neutral')" id="skin-btn-neutral" class="btn-pill active">Core Engine</button>
                 <button onclick="SystemApp.toggleSkin('real')" id="skin-btn-real" class="btn-pill">J Rio</button>
@@ -322,10 +389,23 @@
         </footer>
     </div>
 
-    <!-- =========================================================================
-         OMNISTACK JAVASCRIPT MASTER SYSTEM LOGIC
-         ========================================================================= -->
+    <!-- ==========================================================================
+         OMNISTACK JAVASCRIPT: UI SYSTEM, FUZZY FSM ROUTING, & SECURE PROXY
+         ========================================================================== -->
     <script>
+        // --- SYSTEM VARIABLES ---
+        const JAI_CONFIG = {
+            MODEL: "gemini-1.5-flash",
+        };
+
+        // --- OFFLINE DATABASE (SMILE APP FSM) ---
+        const mockDatabase = [
+            { mode: "short_punchy", topic: "traffic jams", response: "Traffic jams in NYC are just competitive parking." },
+            { mode: "genius_philosopher", topic: "traffic jams", response: "A traffic jam is the universe enforcing a moment of forced contemplation amidst mechanical chaos." },
+            { mode: "comedic_roast", topic: "traffic jams", response: "You're complaining about traffic? Maybe don't drive in a city with 8 million people and three working bridges." },
+            { mode: "short_punchy", topic: "coffee", response: "Coffee: liquid sanity." }
+        ];
+
         // --- VISUAL SYSTEM CONTROLLER ---
         const SystemApp = (() => {
             let state = { is_forked_timeline: false };
@@ -374,7 +454,7 @@
             return { setTheme, toggleSkin, forkTimeline, executeVaultCheckout };
         })();
 
-        // --- CORE ENGINE INITIALIZATION ---
+        // --- CORE ENGINE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             
             const aiPromptInput = document.getElementById('ai-prompt-input');
@@ -395,52 +475,11 @@
             const langSelect = document.getElementById('lang-select');
             const lexiconSelect = document.getElementById('lexicon-select');
             const lexiconInjectBtn = document.getElementById('lexicon-inject-btn');
+            const logicModeSelect = document.getElementById('logic-mode-select');
 
             let isLanguageLocked = false;
-            let activePersonalityMode = "Short & Punchy"; // Baseline State Token
 
-            // ==========================================
-            // LOCAL TESTING DATABANK (Fuzzy Keyword Matching targets)
-            // ==========================================
-            const mockDatabase = [
-                { mode: "Short & Punchy", topic: "traffic jams", response: "Traffic jams: because moving forward at 2 mph is exactly how I planned to experience the city today." },
-                { mode: "Genius Philosopher", topic: "traffic jams", response: "We sit trapped in iron carapaces, mourning lost time while processing the macro-entropy of civil infrastructure development." },
-                { mode: "Comedic Roast", topic: "traffic jams", response: "NYC traffic is the only place on Earth where a parked car and an active highway look completely indistinguishable." }
-            ];
-
-            // ==========================================
-            // HARDCODED PERSONALITY TOGGLES (UI-Dictated Flow First)
-            // ==========================================
-            const setupPersonalityButtons = () => {
-                const modes = [
-                    { id: 'mode-short', name: 'Short & Punchy' },
-                    { id: 'mode-philosopher', name: 'Genius Philosopher' },
-                    { id: 'mode-roast', name: 'Comedic Roast' }
-                ];
-
-                modes.forEach(m => {
-                    const btn = document.getElementById(m.id);
-                    if (btn) {
-                        btn.addEventListener('click', () => {
-                            activePersonalityMode = m.name;
-                            console.log(`FSM Personality Shift: -> ${activePersonalityMode}`);
-                            
-                            // Re-index layout classes on UI loop
-                            modes.forEach(mode => {
-                                const target = document.getElementById(mode.id);
-                                if (target) {
-                                    target.className = "mode-toggle-btn bg-transparent text-slate-400 text-xs font-bold py-2 px-6 rounded-lg border border-slate-700 transition-all hover:text-white";
-                                }
-                            });
-                            btn.className = "mode-toggle-btn bg-indigo-600 text-white text-xs font-bold py-2 px-6 rounded-lg border border-indigo-500 transition-all shadow-[0_0_10px_rgba(79,110,229,0.3)]";
-                            transcriptLine.innerText = `"Personality profile locked: ${activePersonalityMode}"`;
-                        });
-                    }
-                });
-            };
-            setupPersonalityButtons();
-
-            // EQ Visualizer driver
+            // EQ Visualizer
             let eqInterval = null;
             const runVisualizer = (run) => {
                 const bars = document.querySelectorAll('.eq-bar');
@@ -458,13 +497,19 @@
                 }, 80);
             };
 
-            // Anti-Gravity language controller
+            // ==========================================================================
+            // ANTI-GRAVITY LANGUAGE AUTO-DETECT PROTOCOL
+            // ==========================================================================
             const antiGravityLanguageDetect = (text) => {
-                if (!text || isLanguageLocked) return;
+                if (!text) return;
+                if (isLanguageLocked) return; 
+                
                 if (/[\u0900-\u097F]/.test(text)) {
                     langSelect.value = 'hi';
+                    transcriptLine.innerText = '"Anti-Gravity Auto-Detect: Hindi Identified."';
                 } else if (/[áéíóúñ¿¡]/i.test(text)) {
                     langSelect.value = 'es';
+                    transcriptLine.innerText = '"Anti-Gravity Auto-Detect: Spanish/Nahuatl Identified."';
                 } else {
                     langSelect.value = 'en';
                 }
@@ -472,7 +517,9 @@
                 updateVoiceList();
             };
 
-            // Speech-to-Text Native Interface
+            // ==========================================================================
+            // NATIVE SPEECH-TO-TEXT (MICROPHONE)
+            // ==========================================================================
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             let recognition = null;
             let isRecording = false;
@@ -486,139 +533,339 @@
                     isRecording = true;
                     micBtn.classList.add('mic-active');
                     aiPromptInput.placeholder = "Listening... Speak now.";
+                    transcriptLine.innerText = '"Audio channel open. Transcribing..."';
                     runVisualizer(true);
                 };
                 
                 recognition.onresult = (event) => {
                     const transcript = event.results[0][0].transcript;
-                    aiPromptInput.value = transcript;
+                    const currentText = aiPromptInput.value;
+                    aiPromptInput.value = currentText ? currentText + " " + transcript : transcript;
                     transcriptLine.innerText = `"${transcript}"`;
+                };
+                
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    transcriptLine.innerText = '"Microphone error. Check permissions."';
                 };
                 
                 recognition.onend = () => {
                     isRecording = false;
                     micBtn.classList.remove('mic-active');
                     runVisualizer(false);
+                    if(aiPromptInput.value.trim() === "") {
+                        aiPromptInput.placeholder = "Ask Gemini (Thought Engine)...";
+                    }
                 };
 
                 micBtn.addEventListener('click', () => {
-                    if (isRecording) { recognition.stop(); } 
-                    else { recognition.start(); }
+                    if (isRecording) {
+                        recognition.stop();
+                    } else {
+                        recognition.lang = langSelect.value === 'la' ? 'it-IT' : langSelect.value;
+                        recognition.start();
+                    }
+                });
+            } else {
+                micBtn.style.display = 'none';
+            }
+
+            if (promptSpeakerBtn) {
+                promptSpeakerBtn.addEventListener('click', () => {
+                    const textToRead = aiPromptInput.value.trim();
+                    if (!textToRead) {
+                        transcriptLine.innerText = `"No text detected in prompter."`;
+                        return;
+                    }
+                    ttsInput.value = textToRead;
+                    antiGravityLanguageDetect(textToRead);
+                    setTimeout(() => playBtn.click(), 300);
+                    promptSpeakerBtn.classList.add('text-accent-color');
+                    setTimeout(() => promptSpeakerBtn.classList.remove('text-accent-color'), 400);
                 });
             }
 
-            // ==========================================
-            // ROUTING HANDSHAKE: FUZZY INTERSECTION
-            // ==========================================
+            // ==========================================================================
+            // FUZZY KEYWORD MATCHING ALGORITHM (THE FSM ROUTER)
+            // ==========================================================================
+            function fuzzyMatch(userInput, databaseTopic) {
+                const stopWords = new Set(['a', 'an', 'the', 'is', 'and', 'or', 'of', 'to', 'for', 'with', 'on', 'in', 'tell', 'me', 'about', 'nyc', 'some']);
+                
+                const cleanInput = userInput.toLowerCase();
+                const cleanTopic = databaseTopic.toLowerCase();
+                
+                // 1. Prioritize direct exact substring match
+                if (cleanInput.includes(cleanTopic) || cleanTopic.includes(cleanInput)) return true;
+
+                // 2. Tokenize and filter stop words
+                const inputTokens = cleanInput.split(/\s+/).filter(w => !stopWords.has(w) && w.length > 2);
+                const topicTokens = cleanTopic.split(/\s+/).filter(w => !stopWords.has(w) && w.length > 2);
+
+                // 3. Bidirectional overlap scan
+                for (const iToken of inputTokens) {
+                    // Check if user's keyword overlaps with database keyword
+                    if (topicTokens.some(tToken => tToken.includes(iToken) || iToken.includes(tToken))) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // ==========================================================================
+            // MULTI-STATE ROUTING (OFFLINE ARRAY vs. VERCEL API)
+            // ==========================================================================
             generateAiBtn.addEventListener('click', async () => {
-                const val = aiPromptInput.value.trim();
-                if (!val) return;
+                const prompt = aiPromptInput.value.trim();
+                const currentMode = logicModeSelect.value;
+                if (!prompt) return;
 
                 generateAiBtn.disabled = true;
                 runVisualizer(true);
-                transcriptLine.innerText = `"Parsing routing parameters..."`;
-
-                const stopWords = new Set(['a', 'the', 'is', 'in', 'to', 'of', 'for', 'and', 'my', 'your', 'i', 'it', 'with', 'on', 'at']);
-                const getKeywords = (str) => {
-                    return str.toLowerCase().split(/\W+/).filter(word => word.length > 2 && !stopWords.has(word));
-                };
-
-                const userKeywords = getKeywords(val);
-
-                // Run structural search against mock local db matching active layout profile
-                let targetMatch = mockDatabase.find(entry => {
-                    if (entry.mode !== activePersonalityMode) return false;
+                
+                // ROUTE A: THE OFFLINE FSM (Smile App Architecture)
+                if (currentMode !== "cloud_api") {
+                    transcriptLine.innerText = `"Scanning Local Sovereign Memory..."`;
+                    statusDisplay.innerText = "LOCAL FETCH";
+                    statusDisplay.className = "text-[10px] font-bold text-amber-400 uppercase animate-pulse";
                     
-                    const entryTopicLower = entry.topic.toLowerCase();
-                    const valLower = val.toLowerCase();
+                    // The updated database lookup using Fuzzy Matching instead of rigid .includes()
+                    const match = mockDatabase.find(entry => 
+                        entry.mode === currentMode && fuzzyMatch(prompt, entry.topic)
+                    );
 
-                    if (valLower.includes(entryTopicLower)) return true;
-
-                    const topicKeywords = getKeywords(entry.topic);
-                    return userKeywords.some(uKw => entryTopicLower.includes(uKw)) || 
-                           topicKeywords.some(tKw => valLower.includes(tKw));
-                });
-
-                if (targetMatch) {
-                    console.log(`Local Match Engaged: ${targetMatch.topic}`);
-                    ttsInput.value = targetMatch.response;
-                    antiGravityLanguageDetect(targetMatch.response);
-                    transcriptLine.innerText = `"Local match found via Offline Array."`;
-                    generateAiBtn.disabled = false;
-                    runVisualizer(false);
-                    setTimeout(() => playBtn.click(), 200); // Auto fire execution trace
-                } else {
-                    // Fallback to Serverless Endpoint Proxy
-                    console.log("No local keyword intersection. Routing to serverless proxy gateway.");
-                    try {
-                        const response = await fetch('/api/gemini', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prompt: val, mode: activePersonalityMode })
-                        });
-                        if (!response.ok) throw new Error(`HTTP System Error: ${response.status}`);
-                        const data = await response.json();
-                        if (data.text) {
-                            ttsInput.value = data.text;
-                            antiGravityLanguageDetect(data.text);
-                            transcriptLine.innerText = `"Payload secured via proxy layer."`;
-                        }
-                    } catch (error) {
-                        transcriptLine.innerText = `"Gateway execution timeout. Verify server parameters."`;
-                    } finally {
+                    setTimeout(() => {
+                        let generatedText = match ? match.response : "I couldn't find a direct match in the offline matrix. Consider switching to the Cloud API, or rephrasing.";
+                        ttsInput.value = generatedText; 
+                        antiGravityLanguageDetect(generatedText);
+                        
+                        transcriptLine.innerText = `"Local Payload Secured."`;
+                        statusDisplay.innerText = "READY";
+                        statusDisplay.className = "text-[10px] font-bold text-emerald-400 uppercase";
                         generateAiBtn.disabled = false;
                         runVisualizer(false);
+                    }, 600); // Simulated offline calculation latency
+                    
+                    return; // Halt execution so we don't hit the API
+                }
+
+                // ROUTE B: THE CLOUD API (Gemini via Vercel Vault)
+                transcriptLine.innerText = `"Consulting Cognitive Core..."`;
+                statusDisplay.innerText = "API FETCH";
+                statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase animate-pulse";
+
+                try {
+                    const endpoint = '/api/gemini';
+                    const payload = {
+                        prompt: prompt,
+                        model: JAI_CONFIG.MODEL
+                    };
+
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+                    const data = await response.json();
+                    const generatedText = data.text;
+                    
+                    if (generatedText) {
+                        ttsInput.value = generatedText; 
+                        antiGravityLanguageDetect(generatedText);
+                        
+                        transcriptLine.innerText = `"API Payload secured. Ready for acoustic initialization."`;
+                        statusDisplay.innerText = "READY";
+                        statusDisplay.className = "text-[10px] font-bold text-emerald-400 uppercase";
                     }
+                } catch (error) {
+                    console.error("API Gateway Error:", error);
+                    transcriptLine.innerText = `"Gateway Connection Failed. Check server configurations."`;
+                    statusDisplay.innerText = "ERROR";
+                    statusDisplay.className = "text-[10px] font-bold text-red-500 uppercase";
+                } finally {
+                    generateAiBtn.disabled = false;
+                    runVisualizer(false);
                 }
             });
 
-            // ==========================================
-            // LOCAL SPEECH SYNTHESIS ENGINE
-            // ==========================================
+            // ==========================================================================
+            // J-SPEAK TTS CHUNKING ENGINE
+            // ==========================================================================
             let allSystemVoices = [];
             let ttsState = 'idle'; 
             let currentChunks = [];
+            let currentUtterance = null;
+
+            const deviceLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la', 'zh', 'ja', 'ar', 'ru'];
+            let activeLang = supportedLangs.includes(deviceLang) ? deviceLang : 'en';
+            langSelect.value = activeLang;
+
+            lexiconInjectBtn.addEventListener('click', () => {
+                const selectedTerm = lexiconSelect.value;
+                if(selectedTerm) {
+                    const currentText = ttsInput.value;
+                    ttsInput.value = currentText ? currentText + "\n\n" + selectedTerm : selectedTerm;
+                    transcriptLine.innerText = `"Lexicon terminology injected to TTS payload."`;
+                    
+                    lexiconInjectBtn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                    lexiconInjectBtn.innerText = "INJECTED ✓";
+                    setTimeout(() => {
+                        lexiconInjectBtn.classList.replace('bg-emerald-600', 'bg-indigo-600');
+                        lexiconInjectBtn.innerText = "Inject to Prompter";
+                    }, 1500);
+                }
+            });
 
             function updateVoiceList() {
                 allSystemVoices = window.speechSynthesis.getVoices();
                 if (allSystemVoices.length === 0) return;
-                const filteredVoices = allSystemVoices.filter(v => v.lang.startsWith(langSelect.value));
+
+                let searchPrefix = activeLang === 'la' ? 'it' : activeLang;
+                if(activeLang === 'nah') searchPrefix = 'es'; 
+                const filteredVoices = allSystemVoices.filter(v => v.lang.startsWith(searchPrefix));
                 voiceSelect.innerHTML = '';
+                
+                if (filteredVoices.length === 0) {
+                    voiceSelect.innerHTML = '<option value="">No native voices found</option>';
+                    return;
+                }
+
                 filteredVoices.forEach(voice => {
                     const opt = document.createElement('option');
                     opt.value = allSystemVoices.indexOf(voice); 
-                    opt.textContent = `${voice.name} (${voice.lang})`;
+                    let cleanName = voice.name.replace(/Microsoft |Google /g, '');
+                    opt.textContent = `${cleanName} (${voice.lang})`;
+                    if (voice.name.toLowerCase().includes('google') || voice.default) opt.selected = true;
                     voiceSelect.appendChild(opt);
                 });
             }
 
             langSelect.addEventListener('change', () => {
-                isLanguageLocked = true;
+                activeLang = langSelect.value;
+                isLanguageLocked = true; 
+                if(transcriptLine) {
+                    transcriptLine.innerText = `"Anti-Gravity bypassed. Acoustic profile locked to manual selection."`;
+                }
                 updateVoiceList();
             });
 
+            updateVoiceList();
             if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = updateVoiceList;
 
+            function breakTextIntoChunks(text, max = 220) {
+                let cleanText = text.replace(/[*#]/g, '');
+                const sentences = cleanText.match(/[^.!?;\n]+[.!?;\n]+/g) || [cleanText];
+                let chunks = [], current = "";
+                for (let s of sentences) {
+                    if ((current + s).length > max) {
+                        if (current) chunks.push(current.trim());
+                        current = s;
+                    } else current += " " + s;
+                }
+                if (current) chunks.push(current.trim());
+                return chunks.filter(c => c.length > 2);
+            }
+
+            function createUtterance(text) {
+                const u = new SpeechSynthesisUtterance(text);
+                const globalVoiceIndex = voiceSelect.value;
+                
+                if (allSystemVoices.length && globalVoiceIndex !== "") {
+                    u.voice = allSystemVoices[allSystemVoices.indexOf(allSystemVoices.find(v => v.name.includes(voiceSelect.options[voiceSelect.selectedIndex].text.split(' (')[0]))) || globalVoiceIndex];
+                    u.lang = u.voice.lang; 
+                } else {
+                    let defaultLang = activeLang === 'la' ? 'it-IT' : activeLang;
+                    if(activeLang === 'nah') defaultLang = 'es-MX';
+                    u.lang = defaultLang;
+                }
+                
+                u.rate = parseFloat(document.getElementById('rate').value);
+                u.pitch = parseFloat(document.getElementById('pitch').value);
+                u.volume = parseFloat(document.getElementById('volume').value);
+                return u;
+            }
+
+            function updateUIState(state) {
+                ttsState = state;
+                if (state === 'playing') {
+                    playIcon.textContent = "⏸"; playText.textContent = "Pause";
+                    playBtn.classList.replace('from-teal-600', 'from-amber-600');
+                    playBtn.classList.replace('to-emerald-600', 'to-amber-500');
+                    playBtn.classList.replace('hover:from-teal-500', 'hover:from-amber-500');
+                    playBtn.classList.replace('hover:to-emerald-500', 'hover:to-amber-400');
+                    statusDisplay.textContent = "SPEAKING";
+                    statusDisplay.className = "text-[10px] font-bold text-teal-400 uppercase animate-pulse";
+                    runVisualizer(true);
+                } else if (state === 'paused') {
+                    playIcon.textContent = "▶"; playText.textContent = "Resume";
+                    playBtn.classList.replace('from-amber-600', 'from-teal-600');
+                    playBtn.classList.replace('to-amber-500', 'to-emerald-600');
+                    playBtn.classList.replace('hover:from-amber-500', 'hover:from-teal-500');
+                    playBtn.classList.replace('hover:to-amber-400', 'hover:to-emerald-500');
+                    statusDisplay.textContent = "PAUSED";
+                    statusDisplay.className = "text-[10px] font-bold text-amber-400 uppercase";
+                    runVisualizer(false);
+                } else { 
+                    playIcon.textContent = "▶"; playText.textContent = "Initialize";
+                    playBtn.classList.replace('from-amber-600', 'from-teal-600');
+                    playBtn.classList.replace('to-amber-500', 'to-emerald-600');
+                    playBtn.classList.replace('hover:from-amber-500', 'hover:from-teal-500');
+                    playBtn.classList.replace('hover:to-amber-400', 'hover:to-emerald-500');
+                    statusDisplay.textContent = "IDLE";
+                    statusDisplay.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest";
+                    runVisualizer(false);
+                    transcriptLine.innerText = '"Awaiting acoustic authorization or text input..."';
+                }
+            }
+
+            async function processChunks() {
+                for (let i = 0; i < currentChunks.length; i++) {
+                    if (ttsState === 'idle') break;
+                    while (ttsState === 'paused') await new Promise(r => setTimeout(r, 100));
+
+                    transcriptLine.innerText = `"${currentChunks[i]}"`; 
+                    currentUtterance = createUtterance(currentChunks[i]);
+                    
+                    await new Promise(resolve => {
+                        currentUtterance.onend = () => resolve();
+                        currentUtterance.onerror = () => resolve();
+                        speechSynthesis.speak(currentUtterance);
+                    });
+                }
+                if (ttsState !== 'idle') {
+                    transcriptLine.innerText = `"Vocal sequence complete."`;
+                    updateUIState('idle');
+                }
+            }
+
             playBtn.addEventListener('click', () => {
+                if (ttsState === 'playing') { speechSynthesis.pause(); updateUIState('paused'); return; }
+                if (ttsState === 'paused') { speechSynthesis.resume(); updateUIState('playing'); return; }
+
                 const text = ttsInput.value.trim();
                 if (!text) return;
-                speechSynthesis.cancel();
-                
-                const utterance = new SpeechSynthesisUtterance(text);
-                if (voiceSelect.value !== "") {
-                    utterance.voice = allSystemVoices[voiceSelect.value];
-                }
-                utterance.rate = parseFloat(document.getElementById('rate').value);
-                utterance.pitch = parseFloat(document.getElementById('pitch').value);
-                utterance.volume = parseFloat(document.getElementById('volume').value);
 
-                utterance.onstart = () => { statusDisplay.textContent = "SPEAKING"; runVisualizer(true); };
-                utterance.onend = () => { statusDisplay.textContent = "IDLE"; runVisualizer(false); };
-                
-                speechSynthesis.speak(utterance);
+                speechSynthesis.cancel();
+                currentChunks = breakTextIntoChunks(text);
+                if(currentChunks.length === 0) return;
+
+                updateUIState('playing');
+                processChunks();
             });
 
-            stopBtn.addEventListener('click', () => { window.speechSynthesis.cancel(); statusDisplay.textContent = "IDLE"; runVisualizer(false); });
+            stopBtn.addEventListener('click', () => {
+                speechSynthesis.cancel();
+                updateUIState('idle');
+            });
+
+            ['rate','pitch','volume'].forEach(id => {
+                const slider = document.getElementById(id);
+                const val = document.getElementById(id + '-val');
+                slider.addEventListener('input', () => val.textContent = parseFloat(slider.value).toFixed(2));
+            });
         });
     </script>
 </body>
