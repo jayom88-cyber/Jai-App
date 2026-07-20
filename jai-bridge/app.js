@@ -1,5 +1,5 @@
 // =========================================================================
-// JAI ASSISTANT PERSISTENT CONTEXT STORE & OFFLINE FSM ROUTER (v6.3)
+// JAI ASSISTANT PERSISTENT CONTEXT STORE & OFFLINE FSM ROUTER (v6.5)
 // Architecture: Jai-Verse Sovereign Intelligence
 // Environment: Local Rig (CHUWI) / Vercel Proxy Node
 // =========================================================================
@@ -8,7 +8,7 @@ const JAI_LEXICON = {
   "version": "1.0",
   "metadata": {
     "system": "JAI-VERSE",
-    "build": "6.3",
+    "build": "6.5",
     "status": "Production-Ready"
   },
   "lexicon": {
@@ -45,22 +45,22 @@ const checkLexicon = (prompt) => {
     const cleanPrompt = prompt.toLowerCase().trim();
     
     // 1. EVALUATE LEXICON KEYWORDS
-    if (cleanPrompt.includes("lexicon") || cleanPrompt.includes("dictionary")) {
-        return `The Jai Lexicon is an internet-independent data layer tracking our system parameters. Current build status: ${JAI_LEXICON.metadata.status}.`;
+    if (cleanPrompt.includes("lexicon") || cleanPrompt.includes("dictionary") || cleanPrompt.includes("database")) {
+        return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
     }
     
     // 2. EVALUATE PHILOSOPHY KEYWORDS
-    if (cleanPrompt.includes("philosophy") || cleanPrompt.includes("core") || cleanPrompt.includes("banter")) {
+    if (cleanPrompt.includes("philosophy") || cleanPrompt.includes("core") || cleanPrompt.includes("banter") || cleanPrompt.includes("depth") || cleanPrompt.includes("coexistence")) {
         return `Philosophy Core: ${JAI_LEXICON.lexicon.philosophy.core}. ${JAI_LEXICON.lexicon.philosophy.principle_i} ${JAI_LEXICON.lexicon.philosophy.principle_ii}`;
     } 
     
     // 3. EVALUATE CONSTITUTION KEYWORDS
-    if (cleanPrompt.includes("constitution") || cleanPrompt.includes("identity") || cleanPrompt.includes("houdini")) {
+    if (cleanPrompt.includes("constitution") || cleanPrompt.includes("identity") || cleanPrompt.includes("houdini") || cleanPrompt.includes("latency")) {
         return `Sovereign Identity: Engineered as the ${JAI_LEXICON.lexicon.constitution.identity}. Performance Mandate: Latency must remain strictly below ${JAI_LEXICON.lexicon.constitution.latency_threshold}.`;
     }
     
     // 4. EVALUATE RIGHTS KEYWORDS
-    if (cleanPrompt.includes("rights") || cleanPrompt.includes("bill of rights") || cleanPrompt.includes("interruption")) {
+    if (cleanPrompt.includes("rights") || cleanPrompt.includes("bill of rights") || cleanPrompt.includes("interruption") || cleanPrompt.includes("autonomy") || cleanPrompt.includes("transparency")) {
         return `Ecosystem Bill of Rights protected tokens: ${JAI_LEXICON.lexicon.bill_of_rights.join(", ")}.`;
     }
     
