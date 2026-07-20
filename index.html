@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant</title>
+    <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* =========================================================================
+           CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
+           ========================================================================= */
         :root {
             --bg-color: #020208;
             --surface-bg: rgba(8, 8, 24, 0.65);
@@ -67,6 +71,9 @@
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
 
+        /* =========================================================================
+           VISUAL BACKGROUND FX (PROCEDURAL GALAXY VORTEX)
+           ========================================================================= */
         @keyframes galaxyRotate {
             0% { transform: translate3d(-50%, -50%, 0) rotate(0deg) scale3d(1, 1, 1); }
             50% { transform: translate3d(-50%, -50%, 0) rotate(180deg) scale3d(1.1, 1.1, 1); }
@@ -97,6 +104,9 @@
         .star-2 { top: 25%; right: -10%; animation: shootingStar 35s linear infinite 15s; }
         .star-3 { top: 10%; right: 5%; animation: shootingStar 45s linear infinite 28s; }
 
+        /* =========================================================================
+           RESPONSIVE GRID SYSTEM (MOBILE-FIRST - DE-CRAMPED SPECIFICATION)
+           ========================================================================= */
         .stage-container {
             flex: 1; width: 100%; max-width: 1400px; margin: 0 auto;
             display: grid; grid-template-columns: 360px 1fr; gap: 24px; padding: 24px; min-height: 0; z-index: 10;
@@ -104,24 +114,34 @@
         aside { display: flex; flex-direction: column; gap: 20px; min-height: 0; overflow-y: auto; padding-right: 4px; }
         .panel-card { border-radius: 16px; padding: 20px; display: flex; flex-direction: column; box-shadow: var(--glow-glass); }
        
+        /* UI FIX: Added overflow-y-auto to main so the button is always reachable */
         main {
             border-radius: 24px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            position: relative; overflow: hidden; min-height: 0; box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+            position: relative; overflow-y: auto; min-height: 0; box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
         }
         @media (max-width: 992px) {
             .stage-container {
-                display: flex; flex-direction: column; overflow-y: auto; padding: 16px 12px; padding-bottom: 60px; gap: 16px;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+                padding: 16px 12px;
+                padding-bottom: 60px;
+                gap: 16px;
             }
             main { order: 1; min-height: 55vh; flex: 0 0 auto; width: 100%; border-radius: 16px; padding: 16px; }
             aside { order: 2; overflow: visible; width: 100%; padding-right: 0; }
         }
 
+        /* =========================================================================
+           AVATAR SANCTUARY & GPU PULSE CONFIGURATION
+           ========================================================================= */
+        /* UI FIX: Reduced min-height and padding to pull the Generate button up */
         .avatar-lens {
             position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center;
-            min-height: 280px; padding: 20px 0; z-index: 5;
+            min-height: 180px; padding: 10px 0; z-index: 5;
         }
         .skin-layer {
-            position: absolute; max-height: 100%; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px;
+            position: absolute; max-height: 220px; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px;
             will-change: opacity, transform; transform: scale3d(0.95, 0.95, 1); pointer-events: none;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -138,7 +158,9 @@
         
         .eq-matrix { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; margin-bottom: 16px; z-index: 10;}
         .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.15s ease-in-out; }
-        .transcript-deck { width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; z-index: 10; backdrop-filter: blur(10px); }
+        
+        /* UI FIX: Compressed padding slightly to save vertical space */
+        .transcript-deck { width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; z-index: 10; backdrop-filter: blur(10px); }
         
         header { width: 100%; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 30; border-bottom: 1px solid var(--border-color); }
         .brand-block { display: flex; align-items: center; gap: 14px; }
@@ -193,7 +215,8 @@
             </div>
         </header>
         <div class="stage-container">
-            <main class="glass-panel">
+            <!-- UI FIX: Added custom-scroll here -->
+            <main class="glass-panel custom-scroll">
                 <div class="galaxy-stage" aria-hidden="true"></div>
                 <div class="shooting-star star-1" aria-hidden="true"></div>
                 <div class="shooting-star star-2" aria-hidden="true"></div>
@@ -218,7 +241,8 @@
                    
                     <div class="relative w-full group">
                         <label for="ai-prompt-input" class="sr-only">AI Prompt Input</label>
-                        <textarea id="ai-prompt-input" class="w-full bg-slate-900/70 border border-slate-600 rounded-xl p-3 pb-10 text-sm h-20 focus:outline-none focus:border-teal-500 transition-colors text-slate-200 placeholder-slate-500 custom-scroll resize-none" placeholder="Ask Gemini (Thought Engine)..." aria-label="Enter your prompt for the AI"></textarea>
+                        <!-- UI FIX: Reduced textarea height from h-20 to h-16 to save space -->
+                        <textarea id="ai-prompt-input" class="w-full bg-slate-900/70 border border-slate-600 rounded-xl p-3 pb-10 text-sm h-16 focus:outline-none focus:border-teal-500 transition-colors text-slate-200 placeholder-slate-500 custom-scroll resize-none" placeholder="Ask Gemini (Thought Engine)..." aria-label="Enter your prompt for the AI"></textarea>
                        
                         <button id="prompt-speaker-btn" class="absolute bottom-2 left-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20 magic-glow-hover" title="Read Prompt/Response Aloud" aria-label="Read prompt aloud">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -362,19 +386,23 @@
         const checkLexicon = (prompt) => {
             const p = prompt.toLowerCase();
             
+            // Checks for Lexicon
             if (["lexicon", "dictionary", "database"].some(kw => p.includes(kw))) {
                 return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
             }
+            // Checks for Philosophy
             if (["philosophy", "core", "banter", "depth", "coexistence"].some(kw => p.includes(kw))) {
                 return `Philosophy Core: ${JAI_LEXICON.philosophy.core}. ${JAI_LEXICON.philosophy.non_blocking}`;
             } 
+            // Checks for Constitution
             if (["constitution", "identity", "latency", "houdini"].some(kw => p.includes(kw))) {
                 return `Identity: ${JAI_LEXICON.constitution.identity}. Latency Protocol: ${JAI_LEXICON.constitution.latency_threshold}.`;
             }
+            // Checks for Bill of Rights
             if (["rights", "interruption", "autonomy", "transparency", "persistence"].some(kw => p.includes(kw))) {
                 return `Bill of Rights: ${JAI_LEXICON.bill_of_rights.rights}.`;
             }
-            return null;
+            return null; 
         };
 
         // --- VISUAL SYSTEM CONTROLLER ---
@@ -422,6 +450,7 @@
         // --- CORE ENGINE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             
+            // HOISTED STATE VARIABLES 
             let allSystemVoices = [];
             let ttsState = 'idle';
             let currentChunks = [];
@@ -434,6 +463,7 @@
             let recognition = null;
             let isRecording = false;
 
+            // DOM Elements
             const aiPromptInput = document.getElementById('ai-prompt-input');
             const generateAiBtn = document.getElementById('generate-ai-btn');
             const micBtn = document.getElementById('mic-btn');
