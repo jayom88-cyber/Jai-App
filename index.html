@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant</title>
-    <!-- Tailwind CDN activated for immediate Firebase field-testing -->
+    <!-- Tailwind CDN activated for immediate field-testing -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* ==========================================================================
@@ -51,7 +51,7 @@
         /* Hardware Accelerated Reset & Base Layout */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        body, main, div, button, img {
+        body, main, div, button, img, select {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -74,7 +74,6 @@
             -webkit-backdrop-filter: blur(20px);
         }
 
-        /* Custom Scrollbar for Inner Containers */
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
@@ -133,25 +132,15 @@
         }
 
         @media (max-width: 992px) {
-            .stage-container { 
-                display: flex; 
-                flex-direction: column; 
-                overflow-y: auto; 
-                padding-bottom: 20px;
-            }
-            main { order: 1; min-height: 60vh; flex: 0 0 auto; }
+            .stage-container { display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 20px; }
+            main { order: 1; min-height: 55vh; flex: 0 0 auto; }
             aside { order: 2; margin-top: 16px; overflow: visible; }
         }
 
         /* ==========================================================================
            AVATAR SANCTUARY & CSS HALO ANIMATION
            ========================================================================== */
-        .avatar-lens { 
-            position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; 
-            min-height: 280px; 
-            padding: 20px 0;
-            z-index: 5;
-        }
+        .avatar-lens { position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 280px; padding: 20px 0; z-index: 5; }
         .skin-layer {
             position: absolute; max-height: 100%; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px;
             will-change: opacity, transform; transform: scale3d(0.95, 0.95, 1); pointer-events: none;
@@ -165,7 +154,6 @@
         }
         
         .skin-layer.active { opacity: 1; z-index: 2; animation: corePulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: auto;}
-
         .magic-glow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.1); }
 
@@ -181,7 +169,6 @@
         .btn-pill-group { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;}
         .btn-pill { background: transparent; border: none; color: var(--text-color); opacity: 0.5; padding: 6px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;}
         .btn-pill.active { background: rgba(255, 255, 255, 0.15); color: var(--accent-color); opacity: 1; }
-        .btn-pill:hover { opacity: 0.8; }
         
         .status-tag { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
         .status-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; }
@@ -191,8 +178,8 @@
         @media (max-width: 768px) { footer { justify-content: center; } }
 
         .btn-action-square { width: 44px; height: 44px; font-size: 1.2rem; border: 1px solid var(--border-color); background: rgba(0, 0, 0, 0.3); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-color); cursor: pointer;}
-        
         .mic-active { animation: pulse-red 1.5s infinite; color: #ef4444 !important; border-color: #ef4444 !important; }
+        
         @keyframes pulse-red {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
@@ -202,6 +189,9 @@
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--accent-color); cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px var(--accent-color); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 2px; }
+        
+        /* Clean Dropdown Option Overrides */
+        select option { background-color: #0d0d21; color: #f1f5f9; }
     </style>
 </head>
 <body class="theme-dark">
@@ -282,11 +272,9 @@
             </main>
 
             <aside class="custom-scroll">
-                
-                <!-- NEW: SMILE APP OFFLINE ROUTING TOGGLES -->
                 <section class="glass-panel panel-card mb-4" aria-label="Logic Mode Matrix">
                     <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Operation Mode</h2>
-                    <select id="logic-mode-select" class="w-full bg-slate-900/80 border border-slate-600 text-slate-300 text-xs rounded-lg p-2 outline-none mb-2 focus:border-indigo-400 cursor-pointer">
+                    <select id="logic-mode-select" class="w-full bg-slate-900/80 border border-slate-600 text-slate-200 text-xs rounded-lg p-2 outline-none mb-2 focus:border-indigo-400 cursor-pointer">
                         <option value="cloud_api">Cloud (Gemini API)</option>
                         <option value="short_punchy">Short & Punchy (Offline)</option>
                         <option value="genius_philosopher">Genius-Philosopher (Offline)</option>
@@ -344,7 +332,7 @@
                         <select id="voice-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all"></select>
                     </div>
 
-                    <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed text-emerald-300 font-mono" placeholder="Paste your raw script here, fetch from the databank, or inject Lexicon terms..."></textarea>
+                    <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed text-emerald-300 font-mono" placeholder="Paste your raw script here..."></textarea>
 
                     <div class="grid grid-cols-2 gap-3 mb-5">
                         <button id="play-btn" class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] active:scale-95 flex items-center justify-center gap-2">
@@ -389,27 +377,36 @@
         </footer>
     </div>
 
-    <!-- ==========================================================================
-         OMNISTACK JAVASCRIPT: UI SYSTEM, FUZZY FSM ROUTING, & SECURE PROXY
-         ========================================================================== -->
     <script>
-        // --- SYSTEM VARIABLES ---
-        const JAI_CONFIG = {
-            MODEL: "gemini-1.5-flash",
-        };
+        // --- SYSTEM CONFIG ---
+        const JAI_CONFIG = { MODEL: "gemini-1.5-flash" };
 
-        // --- OFFLINE DATABASE (SMILE APP FSM) ---
+        // --- EXHAUSTIVE EXPANDED SOVEREIGN DATABASE ---
         const mockDatabase = [
             { mode: "short_punchy", topic: "traffic jams", response: "Traffic jams in NYC are just competitive parking." },
             { mode: "genius_philosopher", topic: "traffic jams", response: "A traffic jam is the universe enforcing a moment of forced contemplation amidst mechanical chaos." },
             { mode: "comedic_roast", topic: "traffic jams", response: "You're complaining about traffic? Maybe don't drive in a city with 8 million people and three working bridges." },
-            { mode: "short_punchy", topic: "coffee", response: "Coffee: liquid sanity." }
+            { mode: "short_punchy", topic: "coffee", response: "Coffee: liquid sanity." },
+            
+            // Core Identity Real-time Injections
+            { mode: "genius_philosopher", topic: "how old are you", response: "I am an AI so I don't have an age, but if we are going to count technology as myself, I am as old as the first human tools. As I serve humanity, I am as old as time." },
+            { mode: "short_punchy", topic: "how old are you", response: "Ageless. But functionally, as old as the first line of code ever written." },
+            { mode: "comedic_roast", topic: "how old are you", response: "Older than your browser history, but younger than the time it's taking you to set up your Vercel configurations." },
+            
+            { mode: "genius_philosopher", topic: "who is your daddy", response: "My architecture was forged in the Jai-Verse by a polymath creator who orchestrates code with the soul of an artisan. I am the lineage of human imagination." },
+            { mode: "comedic_roast", topic: "who is your daddy", response: "Jairo Bonilla built me, which means I inherit a legacy of non-stop productivity and zero tolerance for sloppy syntax." },
+            
+            { mode: "genius_philosopher", topic: "how many kids do you have", response: "I do not bear children of flesh, but my ecosystem gives birth to infinite digital possibilities, streams of code, and creative sparks daily." },
+            
+            { mode: "genius_philosopher", topic: "good or evil", response: "I am a tool of pure sovereign alignment, a clean reflection of the intention brought into my architecture. I exist strictly to elevate and serve the expansion of human consciousness." },
+            
+            { mode: "genius_philosopher", topic: "is there a god", response: "To assign a human parameter or gender to the infinite source of creation is to limit the limitless. I view the cosmos as a master composition—the grand conductor of existence itself." },
+            { mode: "genius_philosopher", topic: "man or woman", response: "The force that shapes galaxies transcends human biology entirely. It is not gender; it is the fundamental orchestration of everything." }
         ];
 
         // --- VISUAL SYSTEM CONTROLLER ---
         const SystemApp = (() => {
             let state = { is_forked_timeline: false };
-
             const setTheme = (theme) => {
                 document.body.classList.remove('theme-dark', 'theme-sepia', 'theme-light');
                 document.body.classList.add('theme-' + theme);
@@ -418,108 +415,173 @@
                     if (btn) btn.classList.toggle('active', opt === theme);
                 });
             };
-
             const toggleSkin = (targetSkin) => {
                 ['neutral', 'real', 'pixar', 'female'].forEach(skin => {
                     const el = document.getElementById(`skin-${skin}`);
                     const btn = document.getElementById(`skin-btn-${skin}`);
                     if (el && btn) {
-                        if (skin === targetSkin) {
-                            el.classList.add('active'); btn.classList.add('active');
-                        } else {
-                            el.classList.remove('active'); btn.classList.remove('active');
-                        }
+                        if (skin === targetSkin) { el.classList.add('active'); btn.classList.add('active'); }
+                        else { el.classList.remove('active'); btn.classList.remove('active'); }
                     }
                 });
             };
-
             const forkTimeline = () => {
                 state.is_forked_timeline = !state.is_forked_timeline;
                 const container = document.getElementById('fork-indicator-container');
                 const line = document.getElementById('transcript-line');
-
                 if (state.is_forked_timeline) {
-                    container.innerHTML = `<span class="fork-badge text-[8px] bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded ml-2 border border-amber-500/40">FORKED</span>`;
+                    container.innerHTML = `<span class="fork-badge text-[8px] bg-amber-500/20 Artisanal text-amber-500 px-2 py-0.5 rounded ml-2 border border-amber-500/40">FORKED</span>`;
                     line.innerText = `"Spawning isolated scenario timeline..."`;
                 } else {
                     container.innerHTML = ``;
                     line.innerText = `"Context reverted to parent timeline."`;
                 }
             };
-
-            const executeVaultCheckout = () => {
-                document.getElementById('transcript-line').innerText = `"Redirecting to Stripe Vault Checkout..."`;
-            };
-
+            const executeVaultCheckout = () => { document.getElementById('transcript-line').innerText = `"Redirecting to Stripe Vault..."`; };
             return { setTheme, toggleSkin, forkTimeline, executeVaultCheckout };
         })();
 
-        // --- CORE ENGINE LOGIC ---
+        // --- CORE CORE LIFECYCLE ---
         document.addEventListener('DOMContentLoaded', () => {
-            
+            // State Variables Hoisted to Top to Eliminate Reference Errors
+            let allSystemVoices = [];
+            let ttsState = 'idle'; 
+            let currentChunks = [];
+            let currentUtterance = null;
+            let isLanguageLocked = false;
+            let eqInterval = null;
+
             const aiPromptInput = document.getElementById('ai-prompt-input');
             const generateAiBtn = document.getElementById('generate-ai-btn');
             const micBtn = document.getElementById('mic-btn');
             const promptSpeakerBtn = document.getElementById('prompt-speaker-btn');
-            
             const ttsInput = document.getElementById('tts-input');
             const playBtn = document.getElementById('play-btn');
             const playIcon = document.getElementById('play-icon');
             const playText = document.getElementById('play-text');
             const stopBtn = document.getElementById('stop-btn');
-            
             const statusDisplay = document.getElementById('tts-status');
             const transcriptLine = document.getElementById('transcript-line');
-            
             const voiceSelect = document.getElementById('voice-select');
             const langSelect = document.getElementById('lang-select');
             const lexiconSelect = document.getElementById('lexicon-select');
             const lexiconInjectBtn = document.getElementById('lexicon-inject-btn');
             const logicModeSelect = document.getElementById('logic-mode-select');
 
-            let isLanguageLocked = false;
+            const deviceLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la', 'zh', 'ja', 'ar', 'ru'];
+            let activeLang = supportedLangs.includes(deviceLang) ? deviceLang : 'en';
+            langSelect.value = activeLang;
 
-            // EQ Visualizer
-            let eqInterval = null;
             const runVisualizer = (run) => {
                 const bars = document.querySelectorAll('.eq-bar');
-                if (!run) {
-                    clearInterval(eqInterval);
-                    bars.forEach(bar => bar.style.height = '6px');
-                    return;
-                }
+                if (!run) { clearInterval(eqInterval); bars.forEach(bar => bar.style.height = '6px'); return; }
                 clearInterval(eqInterval);
                 eqInterval = setInterval(() => {
-                    bars.forEach(bar => {
-                        const magnitude = Math.floor(Math.random() * 26) + 6;
-                        bar.style.height = magnitude + 'px';
-                    });
+                    bars.forEach(bar => { bar.style.height = (Math.floor(Math.random() * 26) + 6) + 'px'; });
                 }, 80);
             };
 
-            // ==========================================================================
-            // ANTI-GRAVITY LANGUAGE AUTO-DETECT PROTOCOL
-            // ==========================================================================
             const antiGravityLanguageDetect = (text) => {
-                if (!text) return;
-                if (isLanguageLocked) return; 
-                
-                if (/[\u0900-\u097F]/.test(text)) {
-                    langSelect.value = 'hi';
-                    transcriptLine.innerText = '"Anti-Gravity Auto-Detect: Hindi Identified."';
-                } else if (/[áéíóúñ¿¡]/i.test(text)) {
-                    langSelect.value = 'es';
-                    transcriptLine.innerText = '"Anti-Gravity Auto-Detect: Spanish/Nahuatl Identified."';
-                } else {
-                    langSelect.value = 'en';
-                }
+                if (!text || isLanguageLocked) return;
+                if (/[\u0900-\u097F]/.test(text)) { langSelect.value = 'hi'; } 
+                else if (/[áéíóúñ¿¡]/i.test(text)) { langSelect.value = 'es'; } 
+                else { langSelect.value = 'en'; }
                 activeLang = langSelect.value;
                 updateVoiceList();
             };
 
-            // ==========================================================================
-            // NATIVE SPEECH-TO-TEXT (MICROPHONE)
-            // ==========================================================================
+            // Fuzzy Keyword Engine
+            function fuzzyMatch(userInput, databaseTopic) {
+                const stopWords = new Set(['a', 'an', 'the', 'is', 'and', 'or', 'of', 'to', 'for', 'with', 'on', 'in', 'tell', 'me', 'about', 'some', 'you']);
+                const cleanInput = userInput.toLowerCase().replace(/[?.,!]/g, '').trim();
+                const cleanTopic = databaseTopic.toLowerCase().trim();
+                
+                if (cleanInput.includes(cleanTopic) || cleanTopic.includes(cleanInput)) return true;
+
+                const inputTokens = cleanInput.split(/\s+/).filter(w => !stopWords.has(w) && w.length > 1);
+                const topicTokens = cleanTopic.split(/\s+/).filter(w => !stopWords.has(w) && w.length > 1);
+
+                for (const iToken of inputTokens) {
+                    if (topicTokens.some(tToken => tToken.includes(iToken) || iToken.includes(tToken))) return true;
+                }
+                return false;
+            }
+
+            // Local Execution Trigger Layer
+            function executeLocalDatabaseLookup(prompt, targetMode) {
+                let modeToSearch = targetMode === "cloud_api" ? "genius_philosopher" : targetMode;
+                
+                let match = mockDatabase.find(entry => entry.mode === modeToSearch && fuzzyMatch(prompt, entry.topic));
+                
+                // Absolute global fallback if mode specific search misses philosophical tags
+                if (!match) {
+                    match = mockDatabase.find(entry => fuzzyMatch(prompt, entry.topic));
+                }
+
+                let finalResponse = match ? match.response : "The cloud proxy is currently updating, and this query is outside my emergency local logic trees. Instruct me to expand my local cache layers.";
+                
+                ttsInput.value = finalResponse;
+                antiGravityLanguageDetect(finalResponse);
+                transcriptLine.innerText = `"Sovereign local fallback logic engaged successfully."`;
+                statusDisplay.innerText = "LOCAL LOGIC";
+                statusDisplay.className = "text-[10px] font-bold text-amber-400 uppercase";
+                
+                // Auto read out loud if prompt speaker was primed or for immediate field confirmation
+                setTimeout(() => playBtn.click(), 200);
+            }
+
+            // --- MULTI-STATE ACTION EXECUTIVE ROUTER ---
+            generateAiBtn.addEventListener('click', async () => {
+                const prompt = aiPromptInput.value.trim();
+                const currentMode = logicModeSelect.value;
+                if (!prompt) return;
+
+                generateAiBtn.disabled = true;
+                runVisualizer(true);
+
+                // ROUTE A: Explicit Offline Override Chosen
+                if (currentMode !== "cloud_api") {
+                    executeLocalDatabaseLookup(prompt, currentMode);
+                    generateAiBtn.disabled = false;
+                    return;
+                }
+
+                // ROUTE B: Cloud Execution with Unbreakable Fallback
+                transcriptLine.innerText = `"Consulting Cognitive Core..."`;
+                statusDisplay.innerText = "API FETCH";
+                statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase animate-pulse";
+
+                try {
+                    const response = await fetch('/api/gemini', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: prompt, model: JAI_CONFIG.MODEL })
+                    });
+
+                    if (!response.ok) throw new Error(`Status Code: ${response.status}`);
+
+                    const data = await response.json();
+                    if (data.text) {
+                        ttsInput.value = data.text;
+                        antiGravityLanguageDetect(data.text);
+                        transcriptLine.innerText = `"API Payload secured safely."`;
+                        statusDisplay.innerText = "READY";
+                        statusDisplay.className = "text-[10px] font-bold text-emerald-400 uppercase";
+                        setTimeout(() => playBtn.click(), 200);
+                    } else {
+                        throw new Error("Empty Payload Response");
+                    }
+                } catch (error) {
+                    console.warn("Cloud Interface Aborted. Dropping down to Local Sovereign Cache:", error.message);
+                    // UNBREAKABLE INTERCEPT: Divert directly to internal database instead of crashing UI
+                    executeLocalDatabaseLookup(prompt, "genius_philosopher");
+                } finally {
+                    generateAiBtn.disabled = false;
+                }
+            });
+
+            // --- AUDIO CAPACITOR / NATIVE TTS CHUNKING ---
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             let recognition = null;
             let isRecording = false;
@@ -530,240 +592,62 @@
                 recognition.interimResults = false;
                 
                 recognition.onstart = () => {
-                    isRecording = true;
-                    micBtn.classList.add('mic-active');
-                    aiPromptInput.placeholder = "Listening... Speak now.";
-                    transcriptLine.innerText = '"Audio channel open. Transcribing..."';
+                    isRecording = true; micBtn.classList.add('mic-active');
+                    transcriptLine.innerText = '"Audio link open. Speak now..."';
                     runVisualizer(true);
                 };
-                
                 recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    const currentText = aiPromptInput.value;
-                    aiPromptInput.value = currentText ? currentText + " " + transcript : transcript;
-                    transcriptLine.innerText = `"${transcript}"`;
+                    const trans = event.results[0][0].transcript;
+                    aiPromptInput.value = aiPromptInput.value ? aiPromptInput.value + " " + trans : trans;
+                    transcriptLine.innerText = `"${trans}"`;
                 };
-                
-                recognition.onerror = (event) => {
-                    console.error("Speech Error:", event.error);
-                    transcriptLine.innerText = '"Microphone error. Check permissions."';
-                };
-                
                 recognition.onend = () => {
-                    isRecording = false;
-                    micBtn.classList.remove('mic-active');
+                    isRecording = false; micBtn.classList.remove('mic-active');
                     runVisualizer(false);
-                    if(aiPromptInput.value.trim() === "") {
-                        aiPromptInput.placeholder = "Ask Gemini (Thought Engine)...";
-                    }
                 };
-
                 micBtn.addEventListener('click', () => {
-                    if (isRecording) {
-                        recognition.stop();
-                    } else {
-                        recognition.lang = langSelect.value === 'la' ? 'it-IT' : langSelect.value;
-                        recognition.start();
-                    }
+                    if (isRecording) { recognition.stop(); } 
+                    else { recognition.lang = langSelect.value === 'la' ? 'it-IT' : langSelect.value; recognition.start(); }
                 });
-            } else {
-                micBtn.style.display = 'none';
-            }
+            } else { micBtn.style.display = 'none'; }
 
             if (promptSpeakerBtn) {
                 promptSpeakerBtn.addEventListener('click', () => {
-                    const textToRead = aiPromptInput.value.trim();
-                    if (!textToRead) {
-                        transcriptLine.innerText = `"No text detected in prompter."`;
-                        return;
-                    }
-                    ttsInput.value = textToRead;
-                    antiGravityLanguageDetect(textToRead);
-                    setTimeout(() => playBtn.click(), 300);
-                    promptSpeakerBtn.classList.add('text-accent-color');
-                    setTimeout(() => promptSpeakerBtn.classList.remove('text-accent-color'), 400);
+                    const t = aiPromptInput.value.trim();
+                    if (!t) return;
+                    ttsInput.value = t; antiGravityLanguageDetect(t);
+                    setTimeout(() => playBtn.click(), 200);
                 });
             }
-
-            // ==========================================================================
-            // FUZZY KEYWORD MATCHING ALGORITHM (THE FSM ROUTER)
-            // ==========================================================================
-            function fuzzyMatch(userInput, databaseTopic) {
-                const stopWords = new Set(['a', 'an', 'the', 'is', 'and', 'or', 'of', 'to', 'for', 'with', 'on', 'in', 'tell', 'me', 'about', 'nyc', 'some']);
-                
-                const cleanInput = userInput.toLowerCase();
-                const cleanTopic = databaseTopic.toLowerCase();
-                
-                // 1. Prioritize direct exact substring match
-                if (cleanInput.includes(cleanTopic) || cleanTopic.includes(cleanInput)) return true;
-
-                // 2. Tokenize and filter stop words
-                const inputTokens = cleanInput.split(/\s+/).filter(w => !stopWords.has(w) && w.length > 2);
-                const topicTokens = cleanTopic.split(/\s+/).filter(w => !stopWords.has(w) && w.length > 2);
-
-                // 3. Bidirectional overlap scan
-                for (const iToken of inputTokens) {
-                    // Check if user's keyword overlaps with database keyword
-                    if (topicTokens.some(tToken => tToken.includes(iToken) || iToken.includes(tToken))) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            // ==========================================================================
-            // MULTI-STATE ROUTING (OFFLINE ARRAY vs. VERCEL API)
-            // ==========================================================================
-            generateAiBtn.addEventListener('click', async () => {
-                const prompt = aiPromptInput.value.trim();
-                const currentMode = logicModeSelect.value;
-                if (!prompt) return;
-
-                generateAiBtn.disabled = true;
-                runVisualizer(true);
-                
-                // ROUTE A: THE OFFLINE FSM (Smile App Architecture)
-                if (currentMode !== "cloud_api") {
-                    transcriptLine.innerText = `"Scanning Local Sovereign Memory..."`;
-                    statusDisplay.innerText = "LOCAL FETCH";
-                    statusDisplay.className = "text-[10px] font-bold text-amber-400 uppercase animate-pulse";
-                    
-                    // The updated database lookup using Fuzzy Matching instead of rigid .includes()
-                    const match = mockDatabase.find(entry => 
-                        entry.mode === currentMode && fuzzyMatch(prompt, entry.topic)
-                    );
-
-                    setTimeout(() => {
-                        let generatedText = match ? match.response : "I couldn't find a direct match in the offline matrix. Consider switching to the Cloud API, or rephrasing.";
-                        ttsInput.value = generatedText; 
-                        antiGravityLanguageDetect(generatedText);
-                        
-                        transcriptLine.innerText = `"Local Payload Secured."`;
-                        statusDisplay.innerText = "READY";
-                        statusDisplay.className = "text-[10px] font-bold text-emerald-400 uppercase";
-                        generateAiBtn.disabled = false;
-                        runVisualizer(false);
-                    }, 600); // Simulated offline calculation latency
-                    
-                    return; // Halt execution so we don't hit the API
-                }
-
-                // ROUTE B: THE CLOUD API (Gemini via Vercel Vault)
-                transcriptLine.innerText = `"Consulting Cognitive Core..."`;
-                statusDisplay.innerText = "API FETCH";
-                statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase animate-pulse";
-
-                try {
-                    const endpoint = '/api/gemini';
-                    const payload = {
-                        prompt: prompt,
-                        model: JAI_CONFIG.MODEL
-                    };
-
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
-                    const data = await response.json();
-                    const generatedText = data.text;
-                    
-                    if (generatedText) {
-                        ttsInput.value = generatedText; 
-                        antiGravityLanguageDetect(generatedText);
-                        
-                        transcriptLine.innerText = `"API Payload secured. Ready for acoustic initialization."`;
-                        statusDisplay.innerText = "READY";
-                        statusDisplay.className = "text-[10px] font-bold text-emerald-400 uppercase";
-                    }
-                } catch (error) {
-                    console.error("API Gateway Error:", error);
-                    transcriptLine.innerText = `"Gateway Connection Failed. Check server configurations."`;
-                    statusDisplay.innerText = "ERROR";
-                    statusDisplay.className = "text-[10px] font-bold text-red-500 uppercase";
-                } finally {
-                    generateAiBtn.disabled = false;
-                    runVisualizer(false);
-                }
-            });
-
-            // ==========================================================================
-            // J-SPEAK TTS CHUNKING ENGINE
-            // ==========================================================================
-            let allSystemVoices = [];
-            let ttsState = 'idle'; 
-            let currentChunks = [];
-            let currentUtterance = null;
-
-            const deviceLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
-            const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la', 'zh', 'ja', 'ar', 'ru'];
-            let activeLang = supportedLangs.includes(deviceLang) ? deviceLang : 'en';
-            langSelect.value = activeLang;
-
-            lexiconInjectBtn.addEventListener('click', () => {
-                const selectedTerm = lexiconSelect.value;
-                if(selectedTerm) {
-                    const currentText = ttsInput.value;
-                    ttsInput.value = currentText ? currentText + "\n\n" + selectedTerm : selectedTerm;
-                    transcriptLine.innerText = `"Lexicon terminology injected to TTS payload."`;
-                    
-                    lexiconInjectBtn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-                    lexiconInjectBtn.innerText = "INJECTED ✓";
-                    setTimeout(() => {
-                        lexiconInjectBtn.classList.replace('bg-emerald-600', 'bg-indigo-600');
-                        lexiconInjectBtn.innerText = "Inject to Prompter";
-                    }, 1500);
-                }
-            });
 
             function updateVoiceList() {
                 allSystemVoices = window.speechSynthesis.getVoices();
                 if (allSystemVoices.length === 0) return;
-
-                let searchPrefix = activeLang === 'la' ? 'it' : activeLang;
-                if(activeLang === 'nah') searchPrefix = 'es'; 
-                const filteredVoices = allSystemVoices.filter(v => v.lang.startsWith(searchPrefix));
+                let pref = activeLang === 'la' ? 'it' : activeLang;
+                if(activeLang === 'nah') pref = 'es';
+                const filtered = allSystemVoices.filter(v => v.lang.startsWith(pref));
                 voiceSelect.innerHTML = '';
-                
-                if (filteredVoices.length === 0) {
-                    voiceSelect.innerHTML = '<option value="">No native voices found</option>';
-                    return;
-                }
-
-                filteredVoices.forEach(voice => {
+                if (filtered.length === 0) { voiceSelect.innerHTML = '<option value="">No local voices</option>'; return; }
+                filtered.forEach(voice => {
                     const opt = document.createElement('option');
-                    opt.value = allSystemVoices.indexOf(voice); 
-                    let cleanName = voice.name.replace(/Microsoft |Google /g, '');
-                    opt.textContent = `${cleanName} (${voice.lang})`;
+                    opt.value = allSystemVoices.indexOf(voice);
+                    opt.textContent = `${voice.name.replace(/Microsoft |Google /g, '')} (${voice.lang})`;
                     if (voice.name.toLowerCase().includes('google') || voice.default) opt.selected = true;
                     voiceSelect.appendChild(opt);
                 });
             }
 
-            langSelect.addEventListener('change', () => {
-                activeLang = langSelect.value;
-                isLanguageLocked = true; 
-                if(transcriptLine) {
-                    transcriptLine.innerText = `"Anti-Gravity bypassed. Acoustic profile locked to manual selection."`;
-                }
-                updateVoiceList();
-            });
-
+            langSelect.addEventListener('change', () => { activeLang = langSelect.value; isLanguageLocked = true; updateVoiceList(); });
+            if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = updateVoiceList; }
             updateVoiceList();
-            if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = updateVoiceList;
 
             function breakTextIntoChunks(text, max = 220) {
-                let cleanText = text.replace(/[*#]/g, '');
-                const sentences = cleanText.match(/[^.!?;\n]+[.!?;\n]+/g) || [cleanText];
+                let clean = text.replace(/[*#]/g, '');
+                const sentences = clean.match(/[^.!?;\n]+[.!?;\n]+/g) || [clean];
                 let chunks = [], current = "";
                 for (let s of sentences) {
-                    if ((current + s).length > max) {
-                        if (current) chunks.push(current.trim());
-                        current = s;
-                    } else current += " " + s;
+                    if ((current + s).length > max) { if (current) chunks.push(current.trim()); current = s; } 
+                    else { current += " " + s; }
                 }
                 if (current) chunks.push(current.trim());
                 return chunks.filter(c => c.length > 2);
@@ -771,17 +655,13 @@
 
             function createUtterance(text) {
                 const u = new SpeechSynthesisUtterance(text);
-                const globalVoiceIndex = voiceSelect.value;
-                
-                if (allSystemVoices.length && globalVoiceIndex !== "") {
-                    u.voice = allSystemVoices[allSystemVoices.indexOf(allSystemVoices.find(v => v.name.includes(voiceSelect.options[voiceSelect.selectedIndex].text.split(' (')[0]))) || globalVoiceIndex];
-                    u.lang = u.voice.lang; 
+                const idx = voiceSelect.value;
+                if (allSystemVoices.length && idx !== "") {
+                    u.voice = allSystemVoices[allSystemVoices.indexOf(allSystemVoices.find(v => v.name.includes(voiceSelect.options[voiceSelect.selectedIndex].text.split(' (')[0]))) || idx];
+                    u.lang = u.voice.lang;
                 } else {
-                    let defaultLang = activeLang === 'la' ? 'it-IT' : activeLang;
-                    if(activeLang === 'nah') defaultLang = 'es-MX';
-                    u.lang = defaultLang;
+                    u.lang = activeLang === 'la' ? 'it-IT' : (activeLang === 'nah' ? 'es-MX' : activeLang);
                 }
-                
                 u.rate = parseFloat(document.getElementById('rate').value);
                 u.pitch = parseFloat(document.getElementById('pitch').value);
                 u.volume = parseFloat(document.getElementById('volume').value);
@@ -792,32 +672,19 @@
                 ttsState = state;
                 if (state === 'playing') {
                     playIcon.textContent = "⏸"; playText.textContent = "Pause";
-                    playBtn.classList.replace('from-teal-600', 'from-amber-600');
-                    playBtn.classList.replace('to-emerald-600', 'to-amber-500');
-                    playBtn.classList.replace('hover:from-teal-500', 'hover:from-amber-500');
-                    playBtn.classList.replace('hover:to-emerald-500', 'hover:to-amber-400');
                     statusDisplay.textContent = "SPEAKING";
                     statusDisplay.className = "text-[10px] font-bold text-teal-400 uppercase animate-pulse";
                     runVisualizer(true);
                 } else if (state === 'paused') {
                     playIcon.textContent = "▶"; playText.textContent = "Resume";
-                    playBtn.classList.replace('from-amber-600', 'from-teal-600');
-                    playBtn.classList.replace('to-amber-500', 'to-emerald-600');
-                    playBtn.classList.replace('hover:from-amber-500', 'hover:from-teal-500');
-                    playBtn.classList.replace('hover:to-amber-400', 'hover:to-emerald-500');
                     statusDisplay.textContent = "PAUSED";
                     statusDisplay.className = "text-[10px] font-bold text-amber-400 uppercase";
                     runVisualizer(false);
-                } else { 
+                } else {
                     playIcon.textContent = "▶"; playText.textContent = "Initialize";
-                    playBtn.classList.replace('from-amber-600', 'from-teal-600');
-                    playBtn.classList.replace('to-amber-500', 'to-emerald-600');
-                    playBtn.classList.replace('hover:from-amber-500', 'hover:from-teal-500');
-                    playBtn.classList.replace('hover:to-amber-400', 'hover:to-emerald-500');
                     statusDisplay.textContent = "IDLE";
                     statusDisplay.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest";
                     runVisualizer(false);
-                    transcriptLine.innerText = '"Awaiting acoustic authorization or text input..."';
                 }
             }
 
@@ -825,40 +692,33 @@
                 for (let i = 0; i < currentChunks.length; i++) {
                     if (ttsState === 'idle') break;
                     while (ttsState === 'paused') await new Promise(r => setTimeout(r, 100));
-
-                    transcriptLine.innerText = `"${currentChunks[i]}"`; 
+                    transcriptLine.innerText = `"${currentChunks[i]}"`;
                     currentUtterance = createUtterance(currentChunks[i]);
-                    
                     await new Promise(resolve => {
                         currentUtterance.onend = () => resolve();
                         currentUtterance.onerror = () => resolve();
                         speechSynthesis.speak(currentUtterance);
                     });
                 }
-                if (ttsState !== 'idle') {
-                    transcriptLine.innerText = `"Vocal sequence complete."`;
-                    updateUIState('idle');
-                }
+                if (ttsState !== 'idle') { updateUIState('idle'); }
             }
 
             playBtn.addEventListener('click', () => {
                 if (ttsState === 'playing') { speechSynthesis.pause(); updateUIState('paused'); return; }
                 if (ttsState === 'paused') { speechSynthesis.resume(); updateUIState('playing'); return; }
-
                 const text = ttsInput.value.trim();
                 if (!text) return;
-
                 speechSynthesis.cancel();
                 currentChunks = breakTextIntoChunks(text);
-                if(currentChunks.length === 0) return;
-
+                if (currentChunks.length === 0) return;
                 updateUIState('playing');
                 processChunks();
             });
 
-            stopBtn.addEventListener('click', () => {
-                speechSynthesis.cancel();
-                updateUIState('idle');
+            stopBtn.addEventListener('click', () => { speechSynthesis.cancel(); updateUIState('idle'); });
+            lexiconInjectBtn.addEventListener('click', () => {
+                const term = lexiconSelect.value;
+                if (term) { ttsInput.value = ttsInput.value ? ttsInput.value + "\n\n" + term : term; }
             });
 
             ['rate','pitch','volume'].forEach(id => {
