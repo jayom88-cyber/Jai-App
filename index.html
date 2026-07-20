@@ -20,8 +20,6 @@
             --accent-glow: rgba(0, 255, 255, 0.45);
             --galaxy-glow-1: rgba(26, 21, 60, 0.5);
             --galaxy-glow-2: rgba(0, 242, 254, 0.2);
-            --font-scale-p: 0.875rem;
-            --font-scale-h3: 1rem;
             --glow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
         body.theme-sepia {
@@ -125,11 +123,12 @@
                 display: flex;
                 flex-direction: column;
                 overflow-y: auto;
-                padding: 16px;
-                padding-bottom: 32px;
+                padding: 16px 12px;
+                padding-bottom: 60px;
+                gap: 16px;
             }
-            main { order: 1; min-height: 55vh; flex: 0 0 auto; width: 100%; }
-            aside { order: 2; margin-top: 8px; overflow: visible; width: 100%; }
+            main { order: 1; min-height: 55vh; flex: 0 0 auto; width: 100%; border-radius: 16px; padding: 16px; }
+            aside { order: 2; overflow: visible; width: 100%; padding-right: 0; }
         }
 
         /* =========================================================================
@@ -156,7 +155,7 @@
         .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.05); }
         
         .eq-matrix { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; margin-bottom: 16px; z-index: 10;}
-        .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.1s ease; }
+        .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.15s ease-in-out; }
         .transcript-deck { width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; z-index: 10; backdrop-filter: blur(10px); }
         
         header { width: 100%; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 30; border-bottom: 1px solid var(--border-color); }
@@ -378,17 +377,27 @@
             }
         };
 
+        // FIX 1: Semantic Array Matching for 100% Offline Router Accuracy
         const checkLexicon = (prompt) => {
-            if (prompt.includes("philosophy") || prompt.includes("core")) {
+            const p = prompt.toLowerCase();
+            
+            // Checks for Lexicon
+            if (["lexicon", "dictionary", "database"].some(kw => p.includes(kw))) {
+                return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
+            }
+            // Checks for Philosophy
+            if (["philosophy", "core", "banter", "depth", "coexistence"].some(kw => p.includes(kw))) {
                 return `Philosophy Core: ${JAI_LEXICON.philosophy.core}. ${JAI_LEXICON.philosophy.non_blocking}`;
             } 
-            if (prompt.includes("constitution") || prompt.includes("identity")) {
+            // Checks for Constitution
+            if (["constitution", "identity", "latency", "houdini"].some(kw => p.includes(kw))) {
                 return `Identity: ${JAI_LEXICON.constitution.identity}. Latency Protocol: ${JAI_LEXICON.constitution.latency_threshold}.`;
             }
-            if (prompt.includes("rights")) {
+            // Checks for Bill of Rights
+            if (["rights", "interruption", "autonomy", "transparency", "persistence"].some(kw => p.includes(kw))) {
                 return `Bill of Rights: ${JAI_LEXICON.bill_of_rights.rights}.`;
             }
-            return null;
+            return null; // No offline match found, safe to pass to Vercel/Gemini
         };
 
         // --- VISUAL SYSTEM CONTROLLER ---
@@ -436,7 +445,7 @@
         // --- CORE ENGINE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             
-            // HOISTED STATE VARIABLES (Resolves FSM ReferenceErrors during asynchronous language switches)
+            // HOISTED STATE VARIABLES 
             let allSystemVoices = [];
             let ttsState = 'idle';
             let currentChunks = [];
@@ -469,17 +478,12 @@
             
             langSelect.value = activeLang;
 
-            // Local Testing Databank (Fuzzy Matching Targets for Personality Modes)
             const mockDatabase = [
                 { mode: "Short & Punchy", topic: "traffic jams", response: "Traffic jams: because moving forward at 2 mph is exactly how I planned to experience the city today." },
-                { mode: "Genius-Philosopher", topic: "traffic jams", response: "We sit trapped in iron carapaces, mourning lost time while processing the macro-entropy of civil infrastructure development." },
-                { mode: "Comedic Roast", topic: "traffic jams", response: "NYC traffic is the only place on Earth where a parked car and an active highway look completely indistinguishable." },
-                { mode: "Short & Punchy", topic: "lexicon", response: "The Jai Lexicon is an internet-independent database storing core system truths locally." },
-                { mode: "Genius-Philosopher", topic: "lexicon", response: "The lexicon acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud logic dependencies." },
-                { mode: "Comedic Roast", topic: "lexicon", response: "The lexicon is your personal vocabulary database—essentially a dictionary for words you made up so you can look smart offline." }
+                { mode: "Genius-Philosopher", topic: "traffic jams", response: "A traffic jam is the universe enforcing a moment of forced contemplation amidst mechanical chaos." },
+                { mode: "Comedic Roast", topic: "traffic jams", response: "NYC traffic is the only place on Earth where a parked car and an active highway look completely indistinguishable." }
             ];
 
-            // GPU-Optimized Visualizer (Scale transformation eliminates layout reflow and panel-shaking bugs)
             const runVisualizer = (run) => {
                 const bars = document.querySelectorAll('.eq-bar');
                 if (!run) {
@@ -490,28 +494,21 @@
                 clearInterval(eqInterval);
                 eqInterval = setInterval(() => {
                     bars.forEach(bar => {
-                        const magnitude = Math.random() * 3.2 + 1; 
+                        const magnitude = Math.random() * 1.8 + 1; 
                         bar.style.transform = `scaleY(${magnitude})`;
                     });
-                }, 80);
+                }, 120); 
             };
 
             const antiGravityLanguageDetect = (text) => {
-                if (!text || isLanguageLocked) {
-                    if(isLanguageLocked) console.log("Anti-Gravity bypassed: Language is manually locked.");
-                    return;
-                }
-               
+                if (!text || isLanguageLocked) return;
                 if (/[\u0900-\u097F]/.test(text)) {
                     langSelect.value = 'hi';
-                    transcriptLine.innerText = '"Anti-Gravity Auto-Detect: Hindi Identified."';
                 } else if (/[áéíóúñ¿¡]/i.test(text)) {
                     langSelect.value = 'es';
-                    transcriptLine.innerText = '"Anti-Gravity Auto-Detect: Spanish/Nahuatl Identified."';
                 } else {
                     langSelect.value = 'en';
                 }
-               
                 activeLang = langSelect.value;
                 updateVoiceList();
             };
@@ -577,7 +574,7 @@
             }
 
             // ==========================================
-            // GEMINI EDGE API FETCH (SECURE ROUTING & INTEGRATED OMNI-MODE FSM)
+            // GEMINI EDGE API FETCH
             // ==========================================
             if (generateAiBtn) {
                 generateAiBtn.addEventListener('click', async () => {
@@ -586,11 +583,10 @@
                     
                     generateAiBtn.disabled = true;
                     runVisualizer(true);
-
                     const activeMode = modeSelect.value;
 
-                    // A. CORE OFFLINE PROTOCOL AND CONSTITUTION PASS
-                    const offlineResponse = checkLexicon(prompt.toLowerCase());
+                    // 1. OFFLINE LEXICON CHECK
+                    const offlineResponse = checkLexicon(prompt);
                     if (offlineResponse) {
                         ttsInput.value = offlineResponse;
                         transcriptLine.innerText = `"Lexicon Recall Engaged. Bypassing API."`;
@@ -601,20 +597,17 @@
                         return; 
                     }
 
-                    // B. DETECT LOCAL PERSONALITY MODE FILTERS
+                    // 2. OFFLINE FALLBACK MOCK DB CHECK
                     if (activeMode !== "cloud") {
                         const stopWords = new Set(['a', 'the', 'is', 'in', 'to', 'of', 'for', 'and', 'my', 'your', 'i', 'it', 'with', 'on', 'at']);
                         const getKeywords = (str) => {
-                            return str.toLowerCase().split(/\W+/).filter(word => word.length > 2 && !stopWords.has(word));
+                            return str.toLowerCase().split(/\W+/).filter(word => word.length > 3 && !stopWords.has(word));
                         };
-
                         const userKeywords = getKeywords(prompt);
-
                         let localMatch = mockDatabase.find(entry => {
                             if (entry.mode !== activeMode) return false;
                             const entryTopicLower = entry.topic.toLowerCase();
                             const promptLower = prompt.toLowerCase();
-
                             if (promptLower.includes(entryTopicLower)) return true;
                             const topicKeywords = getKeywords(entry.topic);
                             return userKeywords.some(uKw => entryTopicLower.includes(uKw)) ||
@@ -632,7 +625,7 @@
                         }
                     }
 
-                    // C. FALLBACK TO VERCEL SERVERLESS VAULT PROXY
+                    // 3. VERCEL SERVERLESS PROXY CALL
                     transcriptLine.innerText = `"Consulting Cognitive Core..."`;
                     statusDisplay.innerText = "FETCHING";
                     statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase animate-pulse";
@@ -656,9 +649,13 @@
                         }
                     } catch (error) {
                         console.error("API Gateway Error:", error);
-                        transcriptLine.innerText = `"Gateway Connection Failed. Reverting to local fallback."`;
+                        // FIX 2: Explicitly state the Vercel 500 error instead of outputting cached AI lore
+                        const fallbackMsg = `Vercel Gateway Error. Jay, check your Vercel Environment Variables. The API Key is missing or misconfigured in production.`;
+                        ttsInput.value = fallbackMsg;
+                        transcriptLine.innerText = `"Gateway Connection Failed. Status 500."`;
                         statusDisplay.innerText = "ERROR";
                         statusDisplay.className = "text-[10px] font-bold text-red-500 uppercase";
+                        setTimeout(() => playBtn.click(), 200);
                     } finally {
                         generateAiBtn.disabled = false;
                         runVisualizer(false);
@@ -667,7 +664,7 @@
             }
 
             // ==========================================
-            // J-SPEAK TTS CHUNKING ENGINE (US ENGLISH PRIORITY ACCENT SELECTION)
+            // J-SPEAK TTS CHUNKING ENGINE
             // ==========================================
             lexiconInjectBtn.addEventListener('click', () => {
                 const selectedTerm = lexiconSelect.value;
@@ -697,12 +694,17 @@
                     return;
                 }
 
-                // Sorting Pass: Prioritize US English (en-US) vectors as absolute system default
                 if (activeLang === 'en') {
                     filteredVoices.sort((a, b) => {
-                        const aUS = a.lang.includes('US'), bUS = b.lang.includes('US');
-                        if (aUS && !bUS) return -1;
-                        if (!aUS && bUS) return 1;
+                        const aIsUS = a.lang === 'en-US';
+                        const bIsUS = b.lang === 'en-US';
+                        const aIsGB = a.lang === 'en-GB';
+                        const bIsGB = b.lang === 'en-GB';
+                        
+                        if (aIsUS && !bIsUS) return -1;
+                        if (!aIsUS && bIsUS) return 1;
+                        if (aIsGB && !bIsGB) return -1;
+                        if (!aIsGB && bIsGB) return 1;
                         return 0;
                     });
                 }
@@ -712,10 +714,9 @@
                     opt.value = allSystemVoices.indexOf(voice);
                     opt.textContent = `${voice.name.replace(/Microsoft |Google /g, '')} (${voice.lang})`;
                     
-                    // Default Selection Lock: Force en-US configuration first
-                    if (activeLang === 'en' && voice.lang.includes('US') && (voice.name.toLowerCase().includes('google') || voice.default)) {
+                    if (activeLang === 'en' && voice.lang === 'en-US' && (voice.name.toLowerCase().includes('google') || voice.default)) {
                         opt.selected = true;
-                    } else if (voice.default) {
+                    } else if (voice.default && !filteredVoices.some(v => v.lang === 'en-US')) {
                         opt.selected = true;
                     }
                     
