@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant</title>
-    <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* =========================================================================
-           CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
-           ========================================================================= */
         :root {
             --bg-color: #020208;
             --surface-bg: rgba(8, 8, 24, 0.65);
@@ -71,9 +67,6 @@
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
 
-        /* =========================================================================
-           VISUAL BACKGROUND FX (PROCEDURAL GALAXY VORTEX)
-           ========================================================================= */
         @keyframes galaxyRotate {
             0% { transform: translate3d(-50%, -50%, 0) rotate(0deg) scale3d(1, 1, 1); }
             50% { transform: translate3d(-50%, -50%, 0) rotate(180deg) scale3d(1.1, 1.1, 1); }
@@ -104,9 +97,6 @@
         .star-2 { top: 25%; right: -10%; animation: shootingStar 35s linear infinite 15s; }
         .star-3 { top: 10%; right: 5%; animation: shootingStar 45s linear infinite 28s; }
 
-        /* =========================================================================
-           RESPONSIVE GRID SYSTEM (MOBILE-FIRST - DE-CRAMPED SPECIFICATION)
-           ========================================================================= */
         .stage-container {
             flex: 1; width: 100%; max-width: 1400px; margin: 0 auto;
             display: grid; grid-template-columns: 360px 1fr; gap: 24px; padding: 24px; min-height: 0; z-index: 10;
@@ -120,20 +110,12 @@
         }
         @media (max-width: 992px) {
             .stage-container {
-                display: flex;
-                flex-direction: column;
-                overflow-y: auto;
-                padding: 16px 12px;
-                padding-bottom: 60px;
-                gap: 16px;
+                display: flex; flex-direction: column; overflow-y: auto; padding: 16px 12px; padding-bottom: 60px; gap: 16px;
             }
             main { order: 1; min-height: 55vh; flex: 0 0 auto; width: 100%; border-radius: 16px; padding: 16px; }
             aside { order: 2; overflow: visible; width: 100%; padding-right: 0; }
         }
 
-        /* =========================================================================
-           AVATAR SANCTUARY & GPU PULSE CONFIGURATION
-           ========================================================================= */
         .avatar-lens {
             position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center;
             min-height: 280px; padding: 20px 0; z-index: 5;
@@ -377,27 +359,22 @@
             }
         };
 
-        // FIX 1: Semantic Array Matching for 100% Offline Router Accuracy
         const checkLexicon = (prompt) => {
             const p = prompt.toLowerCase();
             
-            // Checks for Lexicon
             if (["lexicon", "dictionary", "database"].some(kw => p.includes(kw))) {
                 return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
             }
-            // Checks for Philosophy
             if (["philosophy", "core", "banter", "depth", "coexistence"].some(kw => p.includes(kw))) {
                 return `Philosophy Core: ${JAI_LEXICON.philosophy.core}. ${JAI_LEXICON.philosophy.non_blocking}`;
             } 
-            // Checks for Constitution
             if (["constitution", "identity", "latency", "houdini"].some(kw => p.includes(kw))) {
                 return `Identity: ${JAI_LEXICON.constitution.identity}. Latency Protocol: ${JAI_LEXICON.constitution.latency_threshold}.`;
             }
-            // Checks for Bill of Rights
             if (["rights", "interruption", "autonomy", "transparency", "persistence"].some(kw => p.includes(kw))) {
                 return `Bill of Rights: ${JAI_LEXICON.bill_of_rights.rights}.`;
             }
-            return null; // No offline match found, safe to pass to Vercel/Gemini
+            return null;
         };
 
         // --- VISUAL SYSTEM CONTROLLER ---
@@ -445,7 +422,6 @@
         // --- CORE ENGINE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             
-            // HOISTED STATE VARIABLES 
             let allSystemVoices = [];
             let ttsState = 'idle';
             let currentChunks = [];
@@ -458,7 +434,6 @@
             let recognition = null;
             let isRecording = false;
 
-            // DOM Elements
             const aiPromptInput = document.getElementById('ai-prompt-input');
             const generateAiBtn = document.getElementById('generate-ai-btn');
             const micBtn = document.getElementById('mic-btn');
@@ -649,7 +624,6 @@
                         }
                     } catch (error) {
                         console.error("API Gateway Error:", error);
-                        // FIX 2: Explicitly state the Vercel 500 error instead of outputting cached AI lore
                         const fallbackMsg = `Vercel Gateway Error. Jay, check your Vercel Environment Variables. The API Key is missing or misconfigured in production.`;
                         ttsInput.value = fallbackMsg;
                         transcriptLine.innerText = `"Gateway Connection Failed. Status 500."`;
