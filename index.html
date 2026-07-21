@@ -8,7 +8,7 @@
     <link href="./output.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Math.js (Offline Math Evaluator) -->
+    <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Math.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
 
     <style>
@@ -364,7 +364,7 @@
     </div>
     <script>
         // ==========================================
-        // SYSTEM VARIABLES & OFFLINE LEXICON
+        // SYSTEM VARIABLES, LEXICON & DICTIONARY
         // ==========================================
         const JAI_CONFIG = {
             MODEL: "gemini-1.5-flash",
@@ -385,7 +385,16 @@
             }
         };
 
-        // TIER 1 LOGIC ROUTER: INTERCEPTS MATH & LEXICON OFFLINE
+        let JAI_DICTIONARY = {};
+        
+        // Fetch Dictionary Asynchronously
+        fetch('./dictionary.json')
+            .then(response => response.json())
+            .then(data => { JAI_DICTIONARY = data; console.log("Offline Dictionary Loaded."); })
+            .catch(err => console.log("Offline Dictionary not found yet (Waiting for Step 1 completion).", err));
+
+
+        // TIER 1 LOGIC ROUTER: INTERCEPTS MATH, LEXICON, & DICTIONARY OFFLINE
         const processTier1Offline = (prompt) => {
             const p = prompt.toLowerCase();
             
@@ -395,22 +404,31 @@
             
             if (isMathRequest && window.math) {
                 try {
-                    // Extract the mathematical expression (strip out conversational words)
                     let expression = p.replace(/(calculate|math|solve|what is|compute|the|value|of)/gi, '').trim();
-                    // Clean up any stray non-math characters
                     expression = expression.replace(/[^0-9+\-*/().^%]/g, '');
-                    
                     if (expression) {
                         const result = math.evaluate(expression);
                         return `The calculated mathematical result is ${result}.`;
                     }
                 } catch (err) {
-                    console.log("Math.js parse bypassed, routing to standard fallback:", err);
+                    console.log("Math bypassed:", err);
                 }
             }
 
-            // 2. Lexicon Interceptor
-            if (["lexicon", "dictionary", "database"].some(kw => p.includes(kw))) {
+            // 2. English Dictionary Interceptor
+            const dictKeywords = ["define", "definition of", "what does"];
+            const isDictRequest = dictKeywords.some(kw => p.includes(kw));
+
+            if (isDictRequest && Object.keys(JAI_DICTIONARY).length > 0) {
+                let word = p.replace(/(define|definition of|what does|mean|the|word)/gi, '').trim();
+                const matchedKey = Object.keys(JAI_DICTIONARY).find(k => k.toLowerCase() === word);
+                if (matchedKey) {
+                    return `The definition of ${word} is: ${JAI_DICTIONARY[matchedKey]}`;
+                }
+            }
+
+            // 3. Lexicon Interceptor
+            if (["lexicon", "database"].some(kw => p.includes(kw))) {
                 return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
             }
             if (["philosophy", "core", "banter", "depth", "coexistence"].some(kw => p.includes(kw))) {
@@ -601,9 +619,6 @@
                 });
             }
 
-            // ==========================================
-            // GEMINI EDGE API FETCH & OFFLINE ROUTING
-            // ==========================================
             if (generateAiBtn) {
                 generateAiBtn.addEventListener('click', async () => {
                     const prompt = aiPromptInput.value.trim();
@@ -691,7 +706,7 @@
             }
 
             // ==========================================
-            // J-SPEAK TTS CHUNKING ENGINE
+            // J-SPEAK TTS CHUNKING ENGINE & VOICE FIX
             // ==========================================
             lexiconInjectBtn.addEventListener('click', () => {
                 const selectedTerm = lexiconSelect.value;
@@ -721,34 +736,35 @@
                     return;
                 }
 
-                if (activeLang === 'en') {
-                    filteredVoices.sort((a, b) => {
-                        const aIsUS = a.lang === 'en-US';
-                        const bIsUS = b.lang === 'en-US';
-                        const aIsGB = a.lang === 'en-GB';
-                        const bIsGB = b.lang === 'en-GB';
-                        
-                        if (aIsUS && !bIsUS) return -1;
-                        if (!aIsUS && bIsUS) return 1;
-                        if (aIsGB && !bIsGB) return -1;
-                        if (!aIsGB && bIsGB) return 1;
-                        return 0;
-                    });
-                }
+                let selectedIndex = 0;
+                let fallbackIndex = 0;
 
-                filteredVoices.forEach(voice => {
+                filteredVoices.forEach((voice, index) => {
                     const opt = document.createElement('option');
                     opt.value = allSystemVoices.indexOf(voice);
-                    opt.textContent = `${voice.name.replace(/Microsoft |Google /g, '')} (${voice.lang})`;
+                    const cleanName = voice.name.replace(/Microsoft |Google /g, '');
+                    opt.textContent = `${cleanName} (${voice.lang})`;
                     
-                    if (activeLang === 'en' && voice.lang === 'en-US' && (voice.name.toLowerCase().includes('google') || voice.default)) {
-                        opt.selected = true;
-                    } else if (voice.default && !filteredVoices.some(v => v.lang === 'en-US')) {
-                        opt.selected = true;
+                    const vName = voice.name.toLowerCase();
+                    
+                    // SMART HUNT: Force Apple/Google standard English Male voices
+                    if (activeLang === 'en') {
+                        if (vName.includes('daniel') || vName.includes('alex') || vName.includes('david')) {
+                            selectedIndex = index; 
+                        } else if (vName.includes('english') && vName.includes('male')) {
+                            fallbackIndex = index;
+                        }
                     }
                     
                     voiceSelect.appendChild(opt);
                 });
+                
+                // Lock the dropdown to the best available male voice
+                if (selectedIndex !== 0) {
+                    voiceSelect.selectedIndex = selectedIndex;
+                } else if (fallbackIndex !== 0) {
+                    voiceSelect.selectedIndex = fallbackIndex;
+                }
             }
 
             langSelect.addEventListener('change', () => {
