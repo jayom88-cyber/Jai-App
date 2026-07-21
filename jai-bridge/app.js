@@ -1,74 +1,78 @@
-// =========================================================================
-// JAI ASSISTANT PERSISTENT CONTEXT STORE & OFFLINE FSM ROUTER (v6.5)
-// Architecture: Jai-Verse Sovereign Intelligence
-// Environment: Local Rig (CHUWI) / Vercel Proxy Node
-// =========================================================================
-
-const JAI_LEXICON = {
-  "version": "1.0",
-  "metadata": {
-    "system": "JAI-VERSE",
-    "build": "6.5",
-    "status": "Production-Ready"
-  },
-  "lexicon": {
-    "philosophy": {
-      "core": "The Coexistence of Banter and Depth",
-      "principle_i": "Non-Blocking Presence: Respecting the rhythm of human thought.",
-      "principle_ii": "Decoupled Soul: Separating real-time expression from background computation.",
-      "principle_iii": "Sovereign Memory: Persistent, stateful, and secure context."
-    },
-    "constitution": {
-      "latency_threshold": "800ms",
-      "identity": "Digital Houdini",
-      "data_privacy": "SynthID Watermarking enforced"
-    },
-    "bill_of_rights": [
-      "The Right to Non-Interruption",
-      "The Right to Autonomy",
-      "The Right to Transparency",
-      "The Right to Persistence"
-    ],
-    "technical_blueprints": {
-      "cognitive_core": "Gemini Interactions API (Stateful)",
-      "audio_pipeline": "WebRTC UDP / Gemini 3.1 Flash TTS",
-      "visual_manager": "Capacitor-wrapped CSS State Machine"
-    }
+// Export the default Vercel Serverless Function handler
+export default async function handler(req, res) {
+  // 1. Acknowledge and handle pre-flight OPTIONS requests for CORS[cite: 2]
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(204).end();
   }
-};
 
-/**
- * Pre-Flight Local FSM Intersection Router
- * Decoupled Evaluation Layer for Zero-Latency Offline Interception
- */
-const checkLexicon = (prompt) => {
-    const cleanPrompt = prompt.toLowerCase().trim();
-    
-    // 1. EVALUATE LEXICON KEYWORDS
-    if (cleanPrompt.includes("lexicon") || cleanPrompt.includes("dictionary") || cleanPrompt.includes("database")) {
-        return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
-    }
-    
-    // 2. EVALUATE PHILOSOPHY KEYWORDS
-    if (cleanPrompt.includes("philosophy") || cleanPrompt.includes("core") || cleanPrompt.includes("banter") || cleanPrompt.includes("depth") || cleanPrompt.includes("coexistence")) {
-        return `Philosophy Core: ${JAI_LEXICON.lexicon.philosophy.core}. ${JAI_LEXICON.lexicon.philosophy.principle_i} ${JAI_LEXICON.lexicon.philosophy.principle_ii}`;
-    } 
-    
-    // 3. EVALUATE CONSTITUTION KEYWORDS
-    if (cleanPrompt.includes("constitution") || cleanPrompt.includes("identity") || cleanPrompt.includes("houdini") || cleanPrompt.includes("latency")) {
-        return `Sovereign Identity: Engineered as the ${JAI_LEXICON.lexicon.constitution.identity}. Performance Mandate: Latency must remain strictly below ${JAI_LEXICON.lexicon.constitution.latency_threshold}.`;
-    }
-    
-    // 4. EVALUATE RIGHTS KEYWORDS
-    if (cleanPrompt.includes("rights") || cleanPrompt.includes("bill of rights") || cleanPrompt.includes("interruption") || cleanPrompt.includes("autonomy") || cleanPrompt.includes("transparency")) {
-        return `Ecosystem Bill of Rights protected tokens: ${JAI_LEXICON.lexicon.bill_of_rights.join(", ")}.`;
-    }
-    
-    return null; // Local intersection clear. Pass execution down to the Vercel cloud proxy pipeline.
-};
+  // Set CORS headers for the actual request[cite: 2]
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
-// Bind to window execution layer to bridge with index.html DOM handlers smoothly
-window.JAI_LEXICON = JAI_LEXICON;
-window.checkLexicon = checkLexicon;
+  // 2. Ensure the request method is POST[cite: 2]
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
-console.log("🚀 Jai-Verse Local Lexicon Data Bank Linked & Compiled With 0 Errors.");
+  // 3. Securely pull the API Key from Vercel Environment Variables[cite: 2]
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("Vercel Proxy Error: GEMINI_API_KEY is not set in Environment Variables.");
+    return res.status(500).json({ error: "API key is not configured on the server." });
+  }
+
+  try {
+    // 4. Parse the incoming request body[cite: 2]
+    const { prompt, mode, model } = req.body;
+
+    if (!prompt) {
+      return res.status(400).json({ error: "Bad Request: 'prompt' is required." });
+    }
+
+    // 5. Inject System Instructions based on the requested 'mode'[cite: 2]
+    let systemInstructionText = "You are Jai, my AI thought partner. You are a 'Digital Houdini'—brilliant, adaptive, witty, and highly efficient. Respond concisely and brilliantly to the user's prompt.";
+
+    switch (mode) {
+        case "Genius-Philosopher":
+            systemInstructionText = "You are a genius philosopher with the personality of Jai. Deconstruct the user's prompt into its core principles and provide a profound, elegant, and concise insight.";
+            break;
+        case "Comedic Roast":
+            systemInstructionText = "You are a world-class comedian with the personality of Jai. Your task is to deliver a sharp, witty, and devastatingly funny roast based on the user's prompt. Be clever, not cruel.";
+            break;
+        case "Short & Punchy":
+             systemInstructionText = "You are Jai. Respond to the user's prompt with an extremely short, punchy, and memorable one-liner or observation.";
+             break;
+    }
+
+    // 6. The Pure Fetch Request (NO HEAVY SDK REQUIRED)
+    const activeModel = model || "gemini-1.5-flash";
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemInstructionText }] },
+            contents: [{ parts: [{ text: prompt }] }]
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error?.message || 'Failed to fetch from Google');
+    }
+
+    // 7. Extract the text and return the clean JSON payload to the frontend[cite: 2]
+    const generatedText = data.candidates[0].content.parts[0].text;
+    return res.status(200).json({ text: generatedText });
+
+  } catch (error) {
+    // 8. Provide robust error logging for Vercel console[cite: 2]
+    console.error("Vercel Proxy Error - Upstream API Call Failed:", error);
+    return res.status(500).json({
+      error: "An error occurred while communicating with the generative AI service.",
+      details: error.message,
+    });
+  }
+}

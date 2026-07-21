@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+a<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -74,6 +74,24 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
+
+        /* =========================================================================
+           THINKING STATE WAVE FUNCTION (THE INVENTOR'S SPINNER)
+           ========================================================================= */
+        .thinking-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
         /* =========================================================================
            VISUAL BACKGROUND FX (PROCEDURAL GALAXY VORTEX)
@@ -670,8 +688,7 @@
 
                     // TIER 2: VERCEL SERVERLESS PROXY CALL (CLOUD)
                     transcriptLine.innerText = `"Consulting Cognitive Core..."`;
-                    statusDisplay.innerText = "FETCHING";
-                    statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase animate-pulse";
+                    updateUIState('thinking');
                     
                     try {
                         const response = await fetch('/api/gemini', {
@@ -687,8 +704,7 @@
                             ttsInput.value = generatedText;
                             antiGravityLanguageDetect(generatedText);
                             transcriptLine.innerText = `"Payload secured. Ready for acoustic initialization."`;
-                            statusDisplay.innerText = "READY";
-                            statusDisplay.className = "text-[10px] font-bold text-emerald-400 uppercase";
+                            updateUIState('idle'); // Clear the spinner before speaking
                         }
                     } catch (error) {
                         console.error("API Gateway Error:", error);
@@ -823,6 +839,10 @@
                     statusDisplay.innerText = "PAUSED";
                     statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
                     runVisualizer(false);
+                } else if (state === 'thinking') {
+                    // THE INVENTOR'S VISUAL CUE
+                    statusDisplay.innerHTML = '<div class="thinking-spinner"></div> THINKING';
+                    statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase flex items-center";
                 } else {
                     playIcon.innerText = "▶";
                     playText.innerText = "Initialize";
