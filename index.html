@@ -7,6 +7,10 @@
     <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Math.js (Offline Math Evaluator) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
+
     <style>
         /* =========================================================================
            CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
@@ -381,26 +385,45 @@
             }
         };
 
-        const checkLexicon = (prompt) => {
+        // TIER 1 LOGIC ROUTER: INTERCEPTS MATH & LEXICON OFFLINE
+        const processTier1Offline = (prompt) => {
             const p = prompt.toLowerCase();
             
-            // Checks for Lexicon
+            // 1. Math Interceptor (Math.js)
+            const mathKeywords = ["calculate", "math", "solve", "what is", "compute"];
+            const isMathRequest = mathKeywords.some(kw => p.includes(kw)) || /^[0-9+\-*/().^\s]+$/.test(p);
+            
+            if (isMathRequest && window.math) {
+                try {
+                    // Extract the mathematical expression (strip out conversational words)
+                    let expression = p.replace(/(calculate|math|solve|what is|compute|the|value|of)/gi, '').trim();
+                    // Clean up any stray non-math characters
+                    expression = expression.replace(/[^0-9+\-*/().^%]/g, '');
+                    
+                    if (expression) {
+                        const result = math.evaluate(expression);
+                        return `The calculated mathematical result is ${result}.`;
+                    }
+                } catch (err) {
+                    console.log("Math.js parse bypassed, routing to standard fallback:", err);
+                }
+            }
+
+            // 2. Lexicon Interceptor
             if (["lexicon", "dictionary", "database"].some(kw => p.includes(kw))) {
                 return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
             }
-            // Checks for Philosophy
             if (["philosophy", "core", "banter", "depth", "coexistence"].some(kw => p.includes(kw))) {
                 return `Philosophy Core: ${JAI_LEXICON.philosophy.core}. ${JAI_LEXICON.philosophy.non_blocking}`;
             } 
-            // Checks for Constitution
             if (["constitution", "identity", "latency", "houdini"].some(kw => p.includes(kw))) {
                 return `Identity: ${JAI_LEXICON.constitution.identity}. Latency Protocol: ${JAI_LEXICON.constitution.latency_threshold}.`;
             }
-            // Checks for Bill of Rights
             if (["rights", "interruption", "autonomy", "transparency", "persistence"].some(kw => p.includes(kw))) {
                 return `Bill of Rights: ${JAI_LEXICON.bill_of_rights.rights}.`;
             }
-            return null; 
+            
+            return null; // Passes to Tier 2 (Cloud) if no offline match is found
         };
 
         // --- VISUAL SYSTEM CONTROLLER ---
@@ -432,12 +455,10 @@
                 const container = document.getElementById('fork-indicator-container');
                 const line = document.getElementById('transcript-line');
                 if (state.is_forked_timeline) {
-                    // V7.0 ARCHITECTURE: STATE LAYER ANCHOR UPDATE
                     document.body.setAttribute('data-timeline-fork', 'forked');
                     container.innerHTML = `<span class="fork-badge text-[8px] bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded ml-2 border border-amber-500/40">FORKED</span>`;
                     line.innerText = `"Spawning isolated scenario timeline..."`;
                 } else {
-                    // V7.0 ARCHITECTURE: STATE LAYER ANCHOR REVERSION
                     document.body.setAttribute('data-timeline-fork', 'main');
                     container.innerHTML = ``;
                     line.innerText = `"Context reverted to parent timeline."`;
@@ -581,7 +602,7 @@
             }
 
             // ==========================================
-            // GEMINI EDGE API FETCH
+            // GEMINI EDGE API FETCH & OFFLINE ROUTING
             // ==========================================
             if (generateAiBtn) {
                 generateAiBtn.addEventListener('click', async () => {
@@ -592,11 +613,11 @@
                     runVisualizer(true);
                     const activeMode = modeSelect.value;
 
-                    // 1. OFFLINE LEXICON CHECK
-                    const offlineResponse = checkLexicon(prompt);
+                    // TIER 1: OFFLINE NEURO-SYMBOLIC ROUTER
+                    const offlineResponse = processTier1Offline(prompt);
                     if (offlineResponse) {
                         ttsInput.value = offlineResponse;
-                        transcriptLine.innerText = `"Lexicon Recall Engaged. Bypassing API."`;
+                        transcriptLine.innerText = `"Offline Compute Engaged. Bypassing Cloud API."`;
                         antiGravityLanguageDetect(offlineResponse);
                         generateAiBtn.disabled = false;
                         runVisualizer(false);
@@ -604,7 +625,7 @@
                         return; 
                     }
 
-                    // 2. OFFLINE FALLBACK MOCK DB CHECK
+                    // TIER 1.5: OFFLINE FALLBACK MOCK DB CHECK
                     if (activeMode !== "cloud") {
                         const stopWords = new Set(['a', 'the', 'is', 'in', 'to', 'of', 'for', 'and', 'my', 'your', 'i', 'it', 'with', 'on', 'at']);
                         const getKeywords = (str) => {
@@ -632,7 +653,7 @@
                         }
                     }
 
-                    // 3. VERCEL SERVERLESS PROXY CALL
+                    // TIER 2: VERCEL SERVERLESS PROXY CALL (CLOUD)
                     transcriptLine.innerText = `"Consulting Cognitive Core..."`;
                     statusDisplay.innerText = "FETCHING";
                     statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase animate-pulse";
