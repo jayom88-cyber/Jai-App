@@ -1,12 +1,15 @@
-a<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant</title>
-    <!-- Compiled Tailwind CSS local build reference -->
+    
+    <!-- Resolved Favicon 404 Error -->
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    
+    <!-- Compiled Tailwind CSS local build reference (Runtime CDN removed) -->
     <link href="./output.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Math.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
@@ -509,6 +512,32 @@ a<!DOCTYPE html>
         // --- CORE ENGINE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             
+            // ==========================================
+            // PHASE 3: MOBILE HARDWARE PERMISSIONS & AUDIO LOOP HANDSHAKE
+            // ==========================================
+            async function initHardwareSandbox() {
+                try {
+                    // Unlock MediaDevices (Microphone Handler)
+                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        console.log("Hardware Handshake: Microphone access granted.");
+                        // Stop tracks immediately post-authorization if background listening is idle
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    
+                    // Unlock Web Audio Context / Speech Synthesis for Mobile Browsers
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel(); // Flush stuck utterances
+                        console.log("Hardware Handshake: TTS Engine online.");
+                    }
+                } catch (err) {
+                    console.warn("Hardware Handshake Notice: User interaction required to unlock audio/mic hooks.", err);
+                }
+            }
+            // Bind to initial app boot
+            initHardwareSandbox();
+
+
             // HOISTED STATE VARIABLES 
             let allSystemVoices = [];
             let ttsState = 'idle';
