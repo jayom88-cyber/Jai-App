@@ -183,13 +183,13 @@
        
         .skin-layer.active { opacity: 1; z-index: 2; animation: corePulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: auto;}
         
-        /* AVATAR LIP-SYNC ANIMATION */
-        @keyframes lipSync {
-            0% { transform: scale3d(1, 1, 1); filter: brightness(1); }
-            50% { transform: scale3d(1.06, 1.06, 1); filter: brightness(1.2) drop-shadow(0 0 25px var(--accent-color)); }
-            100% { transform: scale3d(1, 1, 1); filter: brightness(1); }
+        /* AVATAR LIP-SYNC ANIMATION (FIXED: Smooth Graceful Pulse) */
+        @keyframes speakPulse {
+            0% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) brightness(1); }
+            50% { transform: scale3d(1.02, 1.02, 1); filter: drop-shadow(0 0 35px var(--accent-color)) brightness(1.15); }
+            100% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) brightness(1); }
         }
-        .skin-layer.speaking { animation: lipSync 0.2s ease-in-out infinite; pointer-events: auto; z-index: 3;}
+        .skin-layer.speaking { animation: speakPulse 2s ease-in-out infinite; pointer-events: auto; z-index: 3;}
 
         .magic-glow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.05); }
