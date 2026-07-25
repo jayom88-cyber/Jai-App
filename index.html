@@ -20,6 +20,9 @@
     <!-- ENGLISH JS (COMPROMISE NLP) -->
     <script src="https://unpkg.com/compromise"></script>
 
+    <!-- JAI OFFLINE HISTORY VAULT (NEW!) -->
+    <script src="./jai_history.js"></script>
+
     <style>
         /* =========================================================================
            CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
@@ -485,11 +488,23 @@
         // Offline Router Injection
         function processTier1Offline(prompt) {
             const p = prompt.toLowerCase();
+            
+            // 1. Check Lexicon
             for (const category in JAI_LEXICON) {
                 for (const key in JAI_LEXICON[category]) {
                     if (p.includes(key.replace(/_/g, ' '))) return JAI_LEXICON[category][key];
                 }
             }
+            
+            // 2. Check History Vault (Deep Offline Knowledge)
+            if (typeof JAI_HISTORY_VAULT !== 'undefined') {
+                for (const entry of JAI_HISTORY_VAULT) {
+                    if (p.includes(entry.subject.toLowerCase())) {
+                        return `Accessing Sovereign Vault Data. Subject: ${entry.subject}. ${entry.description}`;
+                    }
+                }
+            }
+            
             return null;
         }
 
