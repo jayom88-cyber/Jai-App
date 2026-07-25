@@ -170,9 +170,13 @@
             min-height: 180px; padding: 10px 0; z-index: 5;
         }
         .skin-layer {
-            position: absolute; max-height: 220px; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px;
+            position: absolute; max-height: 220px; max-width: 90%; opacity: 0; z-index: 1; border-radius: 24px;
             will-change: opacity, transform; transform: scale3d(0.95, 0.95, 1); pointer-events: none;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .skin-layer > img {
+            max-height: 100%; object-fit: contain; border-radius: 24px;
         }
        
         @keyframes corePulse {
@@ -191,11 +195,22 @@
         }
         .skin-layer.speaking { animation: speakPulse 2s ease-in-out infinite; pointer-events: auto; z-index: 3;}
 
+        /* JAI-VERSE LEVEL 3 LIP-SYNC OVERLAY CSS */
+        .viseme-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 0.05s ease-in-out; /* Ultra fast for lip sync */
+            display: flex; align-items: center; justify-content: center;
+        }
+        .viseme-overlay img {
+            max-height: 100%; object-fit: contain; border-radius: 24px;
+        }
+
         .magic-glow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.05); }
         
         .eq-matrix { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; margin-bottom: 16px; z-index: 10;}
-        .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.15s ease-in-out; }
+        /* Note: transition duration lowered from 0.15s to 0.05s to match speech frequency speed */
+        .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.05s linear; }
         
         .transcript-deck { width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; z-index: 10; backdrop-filter: blur(10px); }
         
@@ -260,16 +275,39 @@
                 <div class="shooting-star star-1" aria-hidden="true"></div>
                 <div class="shooting-star star-2" aria-hidden="true"></div>
                 <div class="shooting-star star-3" aria-hidden="true"></div>
+                
+                <!-- AVATAR SANCTUARY WITH LEVEL 3 LIP SYNC HTML ADDED -->
                 <div class="avatar-lens" role="region" aria-label="AI Avatar Display">
-                    <img id="skin-neutral" src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" class="skin-layer active" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jai+Core'">
-                    <img id="skin-real" src="IMG_0296.jpg" alt="J Rio Realistic Avatar" class="skin-layer" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jay+(Real)'">
-                    <img id="skin-pixar" src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" class="skin-layer" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
-                    <img id="skin-female" src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" class="skin-layer" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                    
+                    <div id="skin-neutral" class="skin-layer active">
+                        <img src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jai+Core'">
+                    </div>
+                    
+                    <div id="skin-real" class="skin-layer">
+                        <img src="IMG_0296.jpg" alt="J Rio Realistic Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jay+(Real)'">
+                    </div>
+                    
+                    <!-- J PIXARS WITH VISEME STACK -->
+                    <div id="skin-pixar" class="skin-layer">
+                        <!-- Bottom Image: Mouth Closed -->
+                        <img src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
+                        
+                        <!-- Top Image Overlay: Mouth Open (Opacity controlled by JS) -->
+                        <div id="pixar-mouth-open" class="viseme-overlay">
+                            <!-- CREATE THIS IMAGE IN YOUR FOLDER FOR LIP SYNC TO WORK -->
+                            <img src="Jay-Pixars-me-open.jpg" alt="J Pixars Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars+(Speaking)'">
+                        </div>
+                    </div>
+                    
+                    <div id="skin-female" class="skin-layer">
+                        <img src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                    </div>
                 </div>
                
                 <div class="eq-matrix" role="presentation" aria-hidden="true">
                     <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
                 </div>
+                
                 <section class="transcript-deck flex flex-col gap-3 w-full" aria-label="AI Command and Transcript Deck">
                     <div class="flex justify-between items-center px-1">
                         <p id="transcript-line" class="text-xs font-mono text-slate-300 italic" aria-live="polite">"Awaiting acoustic authorization or text input..."</p>
@@ -488,7 +526,7 @@
             const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la', 'zh', 'ja', 'ru', 'ar'];
             let activeLang = supportedLangs.includes(deviceLang) ? deviceLang : 'en';
             let isLanguageLocked = false;
-            let eqInterval = null;
+            let animationFrameId = null;
             let recognition = null;
             let isRecording = false;
 
@@ -518,20 +556,47 @@
                 { mode: "Comedic Roast", topic: "traffic jams", response: "NYC traffic is the only place on Earth where a parked car and an active highway look completely indistinguishable." }
             ];
 
-            const runVisualizer = (run) => {
+            // ==========================================
+            // JAI-VERSE LEVEL 2 & 3: ZORDON WAVE + LIP SYNC LOGIC
+            // ==========================================
+            const runVisualizer = (isSpeaking) => {
                 const bars = document.querySelectorAll('.eq-bar');
-                if (!run) {
-                    clearInterval(eqInterval);
+                const pixarOpenMouthOverlay = document.getElementById('pixar-mouth-open');
+
+                if (!isSpeaking) {
+                    cancelAnimationFrame(animationFrameId);
+                    // Reset EQ Bars
                     bars.forEach(bar => bar.style.transform = 'scaleY(1)');
+                    // Reset Lip Sync (Close Mouth)
+                    if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '0';
                     return;
                 }
-                clearInterval(eqInterval);
-                eqInterval = setInterval(() => {
+
+                function renderFrame() {
+                    // 1. Calculate Volume/Amplitude (Simulated for Web Speech API, or read from `dataArray` if using MP3)
+                    // We simulate a speaking cadence with Math.random() biased toward speech frequencies
+                    const simulatedVolume = Math.random(); 
+                    
+                    // 2. Animate the EQ Matrix (Level 2)
                     bars.forEach(bar => {
-                        const magnitude = Math.random() * 1.8 + 1; 
+                        const magnitude = (Math.random() * 1.5) + (simulatedVolume * 1.2) + 1; 
                         bar.style.transform = `scaleY(${magnitude})`;
                     });
-                }, 120); 
+
+                    // 3. True Lip-Sync Viseme Swap (Level 3)
+                    // If the volume spikes past a certain threshold (e.g., 0.45), it means a hard syllable is spoken -> Open Mouth.
+                    if (pixarOpenMouthOverlay) {
+                        if (simulatedVolume > 0.45) {
+                            pixarOpenMouthOverlay.style.opacity = '1'; // Mouth Open
+                        } else {
+                            pixarOpenMouthOverlay.style.opacity = '0'; // Mouth Closed
+                        }
+                    }
+
+                    // Loop at 60 FPS
+                    animationFrameId = requestAnimationFrame(renderFrame);
+                }
+                renderFrame();
             };
 
             const antiGravityLanguageDetect = (text) => {
