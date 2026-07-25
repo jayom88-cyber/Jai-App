@@ -8,11 +8,20 @@
     <!-- Resolved Favicon 404 Error -->
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     
-    <!-- Compiled Tailwind CSS local build reference (Runtime CDN removed) -->
+    <!-- Compiled Tailwind CSS local build reference (Ensure Tailwind CLI is running) -->
     <link href="./output.css" rel="stylesheet">
     
+    <!-- Tailwind CDN Fallback (Just in case local output.css isn't built yet) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Math.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
+
+    <!-- ENGLISH JS (COMPROMISE NLP) -->
+    <script src="https://unpkg.com/compromise"></script>
+
+    <!-- JAI OFFLINE HISTORY VAULT (NEW!) -->
+    <script src="./jai_history.js"></script>
 
     <style>
         /* =========================================================================
@@ -164,9 +173,13 @@
             min-height: 180px; padding: 10px 0; z-index: 5;
         }
         .skin-layer {
-            position: absolute; max-height: 220px; max-width: 90%; object-fit: contain; opacity: 0; z-index: 1; border-radius: 24px;
+            position: absolute; max-height: 220px; max-width: 90%; opacity: 0; z-index: 1; border-radius: 24px;
             will-change: opacity, transform; transform: scale3d(0.95, 0.95, 1); pointer-events: none;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .skin-layer > img {
+            max-height: 100%; object-fit: contain; border-radius: 24px;
         }
        
         @keyframes corePulse {
@@ -176,11 +189,31 @@
         }
        
         .skin-layer.active { opacity: 1; z-index: 2; animation: corePulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: auto;}
+        
+        /* AVATAR LIP-SYNC ANIMATION (FIXED: Smooth Graceful Pulse) */
+        @keyframes speakPulse {
+            0% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) brightness(1); }
+            50% { transform: scale3d(1.02, 1.02, 1); filter: drop-shadow(0 0 35px var(--accent-color)) brightness(1.15); }
+            100% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) brightness(1); }
+        }
+        .skin-layer.speaking { animation: speakPulse 2s ease-in-out infinite; pointer-events: auto; z-index: 3;}
+
+        /* JAI-VERSE LEVEL 3 LIP-SYNC OVERLAY CSS */
+        .viseme-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 0.05s ease-in-out; /* Ultra fast for lip sync */
+            display: flex; align-items: center; justify-content: center;
+        }
+        .viseme-overlay img {
+            max-height: 100%; object-fit: contain; border-radius: 24px;
+        }
+
         .magic-glow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.05); }
         
         .eq-matrix { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; margin-bottom: 16px; z-index: 10;}
-        .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.15s ease-in-out; }
+        /* Note: transition duration lowered from 0.15s to 0.05s to match speech frequency speed */
+        .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.05s linear; }
         
         .transcript-deck { width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; z-index: 10; backdrop-filter: blur(10px); }
         
@@ -245,16 +278,39 @@
                 <div class="shooting-star star-1" aria-hidden="true"></div>
                 <div class="shooting-star star-2" aria-hidden="true"></div>
                 <div class="shooting-star star-3" aria-hidden="true"></div>
+                
+                <!-- AVATAR SANCTUARY WITH LEVEL 3 LIP SYNC HTML ADDED -->
                 <div class="avatar-lens" role="region" aria-label="AI Avatar Display">
-                    <img id="skin-neutral" src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" class="skin-layer active" onerror="this.src='https://via.placeholder.com/400x500/0f172a/00ffff?text=Jai+Core'">
-                    <img id="skin-real" src="IMG_0296.jpg" alt="J Rio Realistic Avatar" class="skin-layer" onerror="this.src='https://via.placeholder.com/400x500/0f172a/00ffff?text=Jay+(Real)'">
-                    <img id="skin-pixar" src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" class="skin-layer" onerror="this.src='https://via.placeholder.com/400x500/0f172a/00ffff?text=File+Not+Found+Check+Spelling'">
-                    <img id="skin-female" src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" class="skin-layer" onerror="this.src='https://via.placeholder.com/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                    
+                    <div id="skin-neutral" class="skin-layer active">
+                        <img src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jai+Core'">
+                    </div>
+                    
+                    <div id="skin-real" class="skin-layer">
+                        <img src="IMG_0296.jpg" alt="J Rio Realistic Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jay+(Real)'">
+                    </div>
+                    
+                    <!-- J PIXARS WITH VISEME STACK -->
+                    <div id="skin-pixar" class="skin-layer">
+                        <!-- Bottom Image: Mouth Closed -->
+                        <img src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
+                        
+                        <!-- Top Image Overlay: Mouth Open (Opacity controlled by JS) -->
+                        <div id="pixar-mouth-open" class="viseme-overlay">
+                            <!-- CREATE THIS IMAGE IN YOUR FOLDER FOR LIP SYNC TO WORK -->
+                            <img src="Jay-Pixars-me-open.jpg" alt="J Pixars Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars+(Speaking)'">
+                        </div>
+                    </div>
+                    
+                    <div id="skin-female" class="skin-layer">
+                        <img src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                    </div>
                 </div>
                
                 <div class="eq-matrix" role="presentation" aria-hidden="true">
                     <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
                 </div>
+                
                 <section class="transcript-deck flex flex-col gap-3 w-full" aria-label="AI Command and Transcript Deck">
                     <div class="flex justify-between items-center px-1">
                         <p id="transcript-line" class="text-xs font-mono text-slate-300 italic" aria-live="polite">"Awaiting acoustic authorization or text input..."</p>
@@ -385,11 +441,32 @@
     </div>
     <script>
         // ==========================================
+        // SYSTEM CONTROLS & GLOBAL UI MANAGER
+        // ==========================================
+        window.SystemApp = {
+            setTheme: function(theme) {
+                document.body.className = `theme-${theme}`;
+                document.querySelectorAll('#theme-dark-btn, #theme-sepia-btn, #theme-light-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`theme-${theme}-btn`).classList.add('active');
+            },
+            toggleSkin: function(skinId) {
+                document.querySelectorAll('.skin-layer').forEach(el => el.classList.remove('active'));
+                document.getElementById(`skin-${skinId}`).classList.add('active');
+                document.querySelectorAll('.btn-pill-group:last-of-type .btn-pill').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`skin-btn-${skinId}`).classList.add('active');
+            },
+            executeVaultCheckout: function() {
+                alert("Vault Checkout: Stripe/CashApp integration pending deployment.");
+            },
+            forkTimeline: function() {
+                alert("Timeline Forked: New hypothetical scenario branch created.");
+            }
+        };
+
+        // ==========================================
         // SYSTEM VARIABLES, LEXICON & DICTIONARY
         // ==========================================
-        const JAI_CONFIG = {
-            MODEL: "gemini-1.5-flash",
-        };
+        const JAI_CONFIG = { MODEL: "gemini-1.5-flash" };
 
         const JAI_LEXICON = {
             "philosophy": {
@@ -405,139 +482,56 @@
                 "rights": "Non-Interruption, Autonomy, Transparency, Persistence."
             }
         };
-
-        let JAI_DICTIONARY = {};
         
-        // Fetch Dictionary Asynchronously
-        fetch('./dictionary.json')
-            .then(response => response.json())
-            .then(data => { JAI_DICTIONARY = data; console.log("Offline Dictionary Loaded."); })
-            .catch(err => console.log("Offline Dictionary not found yet (Waiting for Step 1 completion).", err));
+        let JAI_DICTIONARY = {};
 
-
-        // TIER 1 LOGIC ROUTER: INTERCEPTS MATH, LEXICON, & DICTIONARY OFFLINE
-        const processTier1Offline = (prompt) => {
+        // Offline Router Injection
+        function processTier1Offline(prompt) {
             const p = prompt.toLowerCase();
             
-            // 1. Math Interceptor (Math.js)
-            const mathKeywords = ["calculate", "math", "solve", "what is", "compute"];
-            const isMathRequest = mathKeywords.some(kw => p.includes(kw)) || /^[0-9+\-*/().^\s]+$/.test(p);
-            
-            if (isMathRequest && window.math) {
-                try {
-                    let expression = p.replace(/(calculate|math|solve|what is|compute|the|value|of)/gi, '').trim();
-                    expression = expression.replace(/[^0-9+\-*/().^%]/g, '');
-                    if (expression) {
-                        const result = math.evaluate(expression);
-                        return `The calculated mathematical result is ${result}.`;
-                    }
-                } catch (err) {
-                    console.log("Math bypassed:", err);
+            // 1. Check Lexicon
+            for (const category in JAI_LEXICON) {
+                for (const key in JAI_LEXICON[category]) {
+                    if (p.includes(key.replace(/_/g, ' '))) return JAI_LEXICON[category][key];
                 }
-            }
-
-            // 2. English Dictionary Interceptor
-            const dictKeywords = ["define", "definition of", "what does"];
-            const isDictRequest = dictKeywords.some(kw => p.includes(kw));
-
-            if (isDictRequest && Object.keys(JAI_DICTIONARY).length > 0) {
-                let word = p.replace(/(define|definition of|what does|mean|the|word)/gi, '').trim();
-                const matchedKey = Object.keys(JAI_DICTIONARY).find(k => k.toLowerCase() === word);
-                if (matchedKey) {
-                    return `The definition of ${word} is: ${JAI_DICTIONARY[matchedKey]}`;
-                }
-            }
-
-            // 3. Lexicon Interceptor
-            if (["lexicon", "database"].some(kw => p.includes(kw))) {
-                return `The Jai Lexicon is an internet-independent database storing core system truths locally. It acts as an unchanging coordinate map of meaning, retaining ancestral language logic separate from cloud dependencies.`;
-            }
-            if (["philosophy", "core", "banter", "depth", "coexistence"].some(kw => p.includes(kw))) {
-                return `Philosophy Core: ${JAI_LEXICON.philosophy.core}. ${JAI_LEXICON.philosophy.non_blocking}`;
-            } 
-            if (["constitution", "identity", "latency", "houdini"].some(kw => p.includes(kw))) {
-                return `Identity: ${JAI_LEXICON.constitution.identity}. Latency Protocol: ${JAI_LEXICON.constitution.latency_threshold}.`;
-            }
-            if (["rights", "interruption", "autonomy", "transparency", "persistence"].some(kw => p.includes(kw))) {
-                return `Bill of Rights: ${JAI_LEXICON.bill_of_rights.rights}.`;
             }
             
-            return null; // Passes to Tier 2 (Cloud) if no offline match is found
-        };
-
-        // --- VISUAL SYSTEM CONTROLLER ---
-        const SystemApp = (() => {
-            let state = { is_forked_timeline: false };
-            const setTheme = (theme) => {
-                document.body.classList.remove('theme-dark', 'theme-sepia', 'theme-light');
-                document.body.classList.add('theme-' + theme);
-                ['dark', 'sepia', 'light'].forEach(opt => {
-                    const btn = document.getElementById(`theme-${opt}-btn`);
-                    if (btn) btn.classList.toggle('active', opt === theme);
-                });
-            };
-            const toggleSkin = (targetSkin) => {
-                ['neutral', 'real', 'pixar', 'female'].forEach(skin => {
-                    const el = document.getElementById(`skin-${skin}`);
-                    const btn = document.getElementById(`skin-btn-${skin}`);
-                    if (el && btn) {
-                        if (skin === targetSkin) {
-                            el.classList.add('active'); btn.classList.add('active');
-                        } else {
-                            el.classList.remove('active'); btn.classList.remove('active');
-                        }
+            // 2. Check History Vault (Deep Offline Knowledge)
+            if (typeof JAI_HISTORY_VAULT !== 'undefined') {
+                for (const entry of JAI_HISTORY_VAULT) {
+                    if (p.includes(entry.subject.toLowerCase())) {
+                        return `Accessing Sovereign Vault Data. Subject: ${entry.subject}. ${entry.description}`;
                     }
-                });
-            };
-            const forkTimeline = () => {
-                state.is_forked_timeline = !state.is_forked_timeline;
-                const container = document.getElementById('fork-indicator-container');
-                const line = document.getElementById('transcript-line');
-                if (state.is_forked_timeline) {
-                    document.body.setAttribute('data-timeline-fork', 'forked');
-                    container.innerHTML = `<span class="fork-badge text-[8px] bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded ml-2 border border-amber-500/40">FORKED</span>`;
-                    line.innerText = `"Spawning isolated scenario timeline..."`;
-                } else {
-                    document.body.setAttribute('data-timeline-fork', 'main');
-                    container.innerHTML = ``;
-                    line.innerText = `"Context reverted to parent timeline."`;
                 }
-            };
-            const executeVaultCheckout = () => {
-                document.getElementById('transcript-line').innerText = `"Redirecting to Stripe Vault Checkout..."`;
-            };
-            return { setTheme, toggleSkin, forkTimeline, executeVaultCheckout };
-        })();
+            }
+            
+            return null;
+        }
 
-        // --- CORE ENGINE LOGIC ---
+        // ==========================================
+        // PHASE 3: MOBILE HARDWARE PERMISSIONS & AUDIO LOOP HANDSHAKE
+        // ==========================================
+        async function initHardwareSandbox() {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    console.log("Hardware Handshake: Microphone access granted.");
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); 
+                    console.log("Hardware Handshake: TTS Engine online.");
+                }
+            } catch (err) {
+                console.warn("Hardware Handshake Notice: User interaction required to unlock audio/mic hooks.", err);
+            }
+        }
+        initHardwareSandbox();
+
+        // ==========================================
+        // MAIN DOMContentLoaded WRAPPER
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // ==========================================
-            // PHASE 3: MOBILE HARDWARE PERMISSIONS & AUDIO LOOP HANDSHAKE
-            // ==========================================
-            async function initHardwareSandbox() {
-                try {
-                    // Unlock MediaDevices (Microphone Handler)
-                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        console.log("Hardware Handshake: Microphone access granted.");
-                        // Stop tracks immediately post-authorization if background listening is idle
-                        stream.getTracks().forEach(track => track.stop());
-                    }
-                    
-                    // Unlock Web Audio Context / Speech Synthesis for Mobile Browsers
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel(); // Flush stuck utterances
-                        console.log("Hardware Handshake: TTS Engine online.");
-                    }
-                } catch (err) {
-                    console.warn("Hardware Handshake Notice: User interaction required to unlock audio/mic hooks.", err);
-                }
-            }
-            // Bind to initial app boot
-            initHardwareSandbox();
-
-
             // HOISTED STATE VARIABLES 
             let allSystemVoices = [];
             let ttsState = 'idle';
@@ -547,7 +541,7 @@
             const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la', 'zh', 'ja', 'ru', 'ar'];
             let activeLang = supportedLangs.includes(deviceLang) ? deviceLang : 'en';
             let isLanguageLocked = false;
-            let eqInterval = null;
+            let animationFrameId = null;
             let recognition = null;
             let isRecording = false;
 
@@ -577,20 +571,47 @@
                 { mode: "Comedic Roast", topic: "traffic jams", response: "NYC traffic is the only place on Earth where a parked car and an active highway look completely indistinguishable." }
             ];
 
-            const runVisualizer = (run) => {
+            // ==========================================
+            // JAI-VERSE LEVEL 2 & 3: ZORDON WAVE + LIP SYNC LOGIC
+            // ==========================================
+            const runVisualizer = (isSpeaking) => {
                 const bars = document.querySelectorAll('.eq-bar');
-                if (!run) {
-                    clearInterval(eqInterval);
+                const pixarOpenMouthOverlay = document.getElementById('pixar-mouth-open');
+
+                if (!isSpeaking) {
+                    cancelAnimationFrame(animationFrameId);
+                    // Reset EQ Bars
                     bars.forEach(bar => bar.style.transform = 'scaleY(1)');
+                    // Reset Lip Sync (Close Mouth)
+                    if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '0';
                     return;
                 }
-                clearInterval(eqInterval);
-                eqInterval = setInterval(() => {
+
+                function renderFrame() {
+                    // 1. Calculate Volume/Amplitude (Simulated for Web Speech API, or read from `dataArray` if using MP3)
+                    // We simulate a speaking cadence with Math.random() biased toward speech frequencies
+                    const simulatedVolume = Math.random(); 
+                    
+                    // 2. Animate the EQ Matrix (Level 2)
                     bars.forEach(bar => {
-                        const magnitude = Math.random() * 1.8 + 1; 
+                        const magnitude = (Math.random() * 1.5) + (simulatedVolume * 1.2) + 1; 
                         bar.style.transform = `scaleY(${magnitude})`;
                     });
-                }, 120); 
+
+                    // 3. True Lip-Sync Viseme Swap (Level 3)
+                    // If the volume spikes past a certain threshold (e.g., 0.45), it means a hard syllable is spoken -> Open Mouth.
+                    if (pixarOpenMouthOverlay) {
+                        if (simulatedVolume > 0.45) {
+                            pixarOpenMouthOverlay.style.opacity = '1'; // Mouth Open
+                        } else {
+                            pixarOpenMouthOverlay.style.opacity = '0'; // Mouth Closed
+                        }
+                    }
+
+                    // Loop at 60 FPS
+                    animationFrameId = requestAnimationFrame(renderFrame);
+                }
+                renderFrame();
             };
 
             const antiGravityLanguageDetect = (text) => {
@@ -843,7 +864,7 @@
             function createUtterance(text) {
                 const u = new SpeechSynthesisUtterance(text);
                 const voiceIndex = voiceSelect.value;
-               
+                
                 if (allSystemVoices.length && voiceIndex !== "") {
                     u.voice = allSystemVoices[voiceIndex];
                 }
@@ -881,24 +902,43 @@
                 }
             }
 
+            function triggerAvatarLipSync(isSpeaking) {
+                const activeAvatar = document.querySelector('.skin-layer.active');
+                if (activeAvatar) {
+                    if (isSpeaking) {
+                        activeAvatar.classList.add('speaking');
+                    } else {
+                        activeAvatar.classList.remove('speaking');
+                    }
+                }
+            }
+
             function processChunks() {
                 if (currentChunks.length === 0) {
                     updateUIState('idle');
+                    triggerAvatarLipSync(false);
                     return;
                 }
-               
+                
                 const text = currentChunks.shift();
                 currentUtterance = createUtterance(text);
-               
+                
+                currentUtterance.onstart = () => triggerAvatarLipSync(true);
+                currentUtterance.onpause = () => triggerAvatarLipSync(false);
+                currentUtterance.onresume = () => triggerAvatarLipSync(true);
+
                 currentUtterance.onend = () => {
                     if (ttsState === 'playing') {
                         processChunks();
+                    } else {
+                        triggerAvatarLipSync(false);
                     }
                 };
-               
+                
                 currentUtterance.onerror = (e) => {
                     console.error("TTS Error:", e);
                     updateUIState('idle');
+                    triggerAvatarLipSync(false);
                 };
                 speechSynthesis.speak(currentUtterance);
             }
@@ -909,7 +949,7 @@
                     updateUIState('paused');
                     return;
                 }
-               
+                
                 if (ttsState === 'paused') {
                     speechSynthesis.resume();
                     updateUIState('playing');
@@ -927,6 +967,7 @@
             stopBtn.addEventListener('click', () => {
                 speechSynthesis.cancel();
                 updateUIState('idle');
+                triggerAvatarLipSync(false);
             });
 
             ['rate','pitch','volume'].forEach(id => {
