@@ -287,23 +287,26 @@
                     </div>
                     
                     <div id="skin-real" class="skin-layer">
-                        <img src="IMG_0296.jpg" alt="J Rio Realistic Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jay+(Real)'">
+                        <img src="./j_rio.jpg" alt="J Rio Realistic Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jay+(Real)'">
                     </div>
                     
                     <!-- J PIXARS WITH VISEME STACK -->
                     <div id="skin-pixar" class="skin-layer">
                         <!-- Bottom Image: Mouth Closed -->
-                        <img src="Jay-Pixars-me.jpg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
+                        <img src="./j_pixars.jpeg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
                         
                         <!-- Top Image Overlay: Mouth Open (Opacity controlled by JS) -->
                         <div id="pixar-mouth-open" class="viseme-overlay">
                             <!-- CREATE THIS IMAGE IN YOUR FOLDER FOR LIP SYNC TO WORK -->
-                            <img src="Jay-Pixars-me-open.jpg" alt="J Pixars Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars+(Speaking)'">
+                            <img src="./j_pixars_open.jpeg" alt="J Pixars Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars+(Speaking)'">
                         </div>
                     </div>
                     
                     <div id="skin-female" class="skin-layer">
-                        <img src="Jai- Ai 2026 Hero Image Femal.png" alt="Jai Female Synthesized Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                        <img src="./female_gravatar.png" alt="Jai Female Synthesized Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                        <div id="female-mouth-open" class="viseme-overlay">
+                            <img src="./femal_gravatar_open.png" alt="Jai Female Synthesized Avatar Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar+(Speaking)'">
+                        </div>
                     </div>
                 </div>
                
@@ -339,6 +342,7 @@
                     </button>
                 </section>
             </main>
+
             <aside class="custom-scroll" aria-label="Application Controls and Data Sources">
                 <section class="glass-panel panel-card mb-4" aria-label="Operation Control Configuration">
                     <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Operation Mode</h2>
@@ -373,6 +377,7 @@
                     </select>
                     <button id="lexicon-inject-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-lg active:scale-95" aria-label="Inject selected lexicon term into prompter">Inject to Prompter</button>
                 </section>
+
                 <section class="glass-panel panel-card mb-4" aria-label="Acoustic Parameters">
                     <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Acoustic Parameters</h2>
                    
@@ -439,6 +444,7 @@
             </div>
         </footer>
     </div>
+    
     <script>
         // ==========================================
         // SYSTEM CONTROLS & GLOBAL UI MANAGER
@@ -577,6 +583,7 @@
             const runVisualizer = (isSpeaking) => {
                 const bars = document.querySelectorAll('.eq-bar');
                 const pixarOpenMouthOverlay = document.getElementById('pixar-mouth-open');
+                const femaleOpenMouthOverlay = document.getElementById('female-mouth-open');
 
                 if (!isSpeaking) {
                     cancelAnimationFrame(animationFrameId);
@@ -584,6 +591,7 @@
                     bars.forEach(bar => bar.style.transform = 'scaleY(1)');
                     // Reset Lip Sync (Close Mouth)
                     if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '0';
+                    if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = '0';
                     return;
                 }
 
@@ -600,12 +608,12 @@
 
                     // 3. True Lip-Sync Viseme Swap (Level 3)
                     // If the volume spikes past a certain threshold (e.g., 0.45), it means a hard syllable is spoken -> Open Mouth.
-                    if (pixarOpenMouthOverlay) {
-                        if (simulatedVolume > 0.45) {
-                            pixarOpenMouthOverlay.style.opacity = '1'; // Mouth Open
-                        } else {
-                            pixarOpenMouthOverlay.style.opacity = '0'; // Mouth Closed
-                        }
+                    if (simulatedVolume > 0.45) {
+                        if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '1';
+                        if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = '1';
+                    } else {
+                        if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '0';
+                        if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = '0';
                     }
 
                     // Loop at 60 FPS
