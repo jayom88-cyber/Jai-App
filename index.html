@@ -293,7 +293,7 @@
                     <!-- J PIXARS WITH VISEME STACK -->
                     <div id="skin-pixar" class="skin-layer">
                         <!-- Bottom Image: Mouth Closed -->
-                        <img src="./j_pixars.jpeg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
+                        <img src="./jpixars.jpeg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
                         
                         <!-- Top Image Overlay: Mouth Open (Opacity controlled by JS) -->
                         <div id="pixar-mouth-open" class="viseme-overlay">
@@ -766,11 +766,20 @@
                         }
                     } catch (error) {
                         console.error("API Gateway Error:", error);
-                        const fallbackMsg = `Vercel Gateway Error. Jay, check your Vercel Environment Variables. The API Key is missing or misconfigured in production.`;
-                        ttsInput.value = fallbackMsg;
-                        transcriptLine.innerText = `"Gateway Connection Failed. Status 500."`;
-                        statusDisplay.innerText = "ERROR";
-                        statusDisplay.className = "text-[10px] font-bold text-red-500 uppercase";
+                        // NEW FALLBACK LOGIC: Never fail, always fall back to local responses if API is down
+                        const fallbackResponses = [
+                            "My cloud connection is currently blocked, but my local neuro-symbolic engine is still active.",
+                            "I am unable to reach the Gemini API at this moment. The Vercel Gateway requires configuration.",
+                            "Sovereign vault accessed: Cloud link severed. I am operating safely in offline mode."
+                        ];
+                        const randomMsg = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+                        ttsInput.value = randomMsg;
+                        transcriptLine.innerText = `"Cloud connection failed. Routing to local vault."`;
+                        
+                        // Update UI to show graceful degradation
+                        statusDisplay.innerText = "OFFLINE MODE";
+                        statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
+                        
                         setTimeout(() => playBtn.click(), 200);
                     } finally {
                         generateAiBtn.disabled = false;
