@@ -538,6 +538,15 @@
         // MAIN DOMContentLoaded WRAPPER
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // --- CAPACITOR HAPTICS CORE ENGINE (INJECTED) ---
+            const fireHapticHandshake = async (style = 'MEDIUM') => {
+                if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) {
+                    try {
+                        await window.Capacitor.Plugins.Haptics.impact({ style });
+                    } catch(e) { console.warn("Haptics unavailable", e); }
+                }
+            };
+
             // HOISTED STATE VARIABLES 
             let allSystemVoices = [];
             let ttsState = 'idle';
@@ -551,7 +560,7 @@
             let recognition = null;
             let isRecording = false;
 
-            // DOM Elements
+            // DOM Elements (CONSOLIDATED)
             const aiPromptInput = document.getElementById('ai-prompt-input');
             const generateAiBtn = document.getElementById('generate-ai-btn');
             const micBtn = document.getElementById('mic-btn');
@@ -568,6 +577,10 @@
             const lexiconSelect = document.getElementById('lexicon-select');
             const lexiconInjectBtn = document.getElementById('lexicon-inject-btn');
             const modeSelect = document.getElementById('mode-select');
+            const pixarOpenMouthOverlay = document.getElementById('pixar-mouth-open');
+            const femaleOpenMouthOverlay = document.getElementById('female-mouth-open');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
             
             langSelect.value = activeLang;
 
@@ -582,41 +595,28 @@
             // ==========================================
             const runVisualizer = (isSpeaking) => {
                 const bars = document.querySelectorAll('.eq-bar');
-                const pixarOpenMouthOverlay = document.getElementById('pixar-mouth-open');
-                const femaleOpenMouthOverlay = document.getElementById('female-mouth-open');
-
+                
                 if (!isSpeaking) {
                     cancelAnimationFrame(animationFrameId);
-                    // Reset EQ Bars
+                    animationFrameId = null; // Clear ID
                     bars.forEach(bar => bar.style.transform = 'scaleY(1)');
-                    // Reset Lip Sync (Close Mouth)
                     if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '0';
                     if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = '0';
                     return;
                 }
 
                 function renderFrame() {
-                    // 1. Calculate Volume/Amplitude (Simulated for Web Speech API, or read from `dataArray` if using MP3)
-                    // We simulate a speaking cadence with Math.random() biased toward speech frequencies
                     const simulatedVolume = Math.random(); 
                     
-                    // 2. Animate the EQ Matrix (Level 2)
                     bars.forEach(bar => {
                         const magnitude = (Math.random() * 1.5) + (simulatedVolume * 1.2) + 1; 
                         bar.style.transform = `scaleY(${magnitude})`;
                     });
 
-                    // 3. True Lip-Sync Viseme Swap (Level 3)
-                    // If the volume spikes past a certain threshold (e.g., 0.45), it means a hard syllable is spoken -> Open Mouth.
-                    if (simulatedVolume > 0.45) {
-                        if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '1';
-                        if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = '1';
-                    } else {
-                        if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = '0';
-                        if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = '0';
-                    }
+                    const isMouthOpen = simulatedVolume > 0.45;
+                    if (pixarOpenMouthOverlay) pixarOpenMouthOverlay.style.opacity = isMouthOpen ? '1' : '0';
+                    if (femaleOpenMouthOverlay) femaleOpenMouthOverlay.style.opacity = isMouthOpen ? '1' : '0';
 
-                    // Loop at 60 FPS
                     animationFrameId = requestAnimationFrame(renderFrame);
                 }
                 renderFrame();
@@ -635,6 +635,20 @@
                 updateVoiceList();
             };
 
+            // NETWORK STATUS LISTENER
+            const updateNetworkStatus = () => {
+                if(navigator.onLine) {
+                    statusDot.style.backgroundColor = '#10b981';
+                    statusText.innerText = "Engine Online";
+                } else {
+                    statusDot.style.backgroundColor = '#f59e0b';
+                    statusText.innerText = "Offline Vault Active";
+                }
+            };
+            window.addEventListener('online', updateNetworkStatus);
+            window.addEventListener('offline', updateNetworkStatus);
+            updateNetworkStatus();
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
                 recognition = new SpeechRecognition();
@@ -647,6 +661,7 @@
                     aiPromptInput.placeholder = "Listening... Speak now.";
                     transcriptLine.innerText = '"Audio channel open. Transcribing..."';
                     runVisualizer(true);
+                    fireHapticHandshake('LIGHT'); // HAPTIC TRIGGER 1: Mic Toggle
                 };
                
                 recognition.onresult = (event) => {
@@ -695,6 +710,27 @@
                 });
             }
 
+            // DECOUPLED OFFLINE GENERATOR USING COMPROMISE.JS
+            function generateDynamicOfflineResponse(prompt, mode) {
+                let fallbackSubject = "that logic";
+                if (window.nlp) {
+                    let doc = nlp(prompt);
+                    let nouns = doc.nouns().out('array');
+                    if (nouns.length > 0) {
+                        fallbackSubject = nouns[0];
+                    }
+                }
+
+                const responses = {
+                    "Short & Punchy": `System running offline. Based on the local vault, ${fallbackSubject} is securely configured. Cloud sync is pending.`,
+                    "Genius-Philosopher": `The network is severed, yet the mind continues. Pondering ${fallbackSubject} locally reveals the strength of offline sovereign memory.`,
+                    "Comedic Roast": `You asked about ${fallbackSubject} while we have zero internet connection? Great timing. I'm running on local fumes here.`,
+                    "cloud": `Offline Mode Active. The Gemini API is currently unreachable, but I have synthesized a localized context for ${fallbackSubject}.`
+                };
+
+                return responses[mode] || responses["cloud"];
+            }
+
             if (generateAiBtn) {
                 generateAiBtn.addEventListener('click', async () => {
                     const prompt = aiPromptInput.value.trim();
@@ -719,9 +755,7 @@
                     // TIER 1.5: OFFLINE FALLBACK MOCK DB CHECK
                     if (activeMode !== "cloud") {
                         const stopWords = new Set(['a', 'the', 'is', 'in', 'to', 'of', 'for', 'and', 'my', 'your', 'i', 'it', 'with', 'on', 'at']);
-                        const getKeywords = (str) => {
-                            return str.toLowerCase().split(/\W+/).filter(word => word.length > 3 && !stopWords.has(word));
-                        };
+                        const getKeywords = (str) => str.toLowerCase().split(/\W+/).filter(word => word.length > 3 && !stopWords.has(word));
                         const userKeywords = getKeywords(prompt);
                         let localMatch = mockDatabase.find(entry => {
                             if (entry.mode !== activeMode) return false;
@@ -729,8 +763,7 @@
                             const promptLower = prompt.toLowerCase();
                             if (promptLower.includes(entryTopicLower)) return true;
                             const topicKeywords = getKeywords(entry.topic);
-                            return userKeywords.some(uKw => entryTopicLower.includes(uKw)) ||
-                                   topicKeywords.some(tKw => promptLower.includes(tKw));
+                            return userKeywords.some(uKw => entryTopicLower.includes(uKw)) || topicKeywords.some(tKw => promptLower.includes(tKw));
                         });
 
                         if (localMatch) {
@@ -744,16 +777,36 @@
                         }
                     }
 
-                    // TIER 2: VERCEL SERVERLESS PROXY CALL (CLOUD)
+                    // OFFLINE INTERCEPT: If literally no internet, skip API completely.
+                    if (!navigator.onLine || activeMode !== "cloud") {
+                        setTimeout(() => {
+                            const localResponse = generateDynamicOfflineResponse(prompt, activeMode);
+                            ttsInput.value = localResponse;
+                            transcriptLine.innerText = `"Bypassing Cloud API. Routing to Offline Neuro-Symbolic Engine."`;
+                            generateAiBtn.disabled = false;
+                            runVisualizer(false);
+                            updateUIState('idle');
+                            playBtn.click(); 
+                        }, 600);
+                        return;
+                    }
+
+                    // TIER 2: VERCEL SERVERLESS PROXY CALL (CLOUD) WITH FAIL-SAFE
                     transcriptLine.innerText = `"Consulting Cognitive Core..."`;
                     updateUIState('thinking');
                     
                     try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 8000); 
+
                         const response = await fetch('/api/gemini', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prompt: prompt, mode: activeMode, model: JAI_CONFIG.MODEL })
+                            body: JSON.stringify({ prompt: prompt, mode: activeMode, model: JAI_CONFIG.MODEL }),
+                            signal: controller.signal
                         });
+                        clearTimeout(timeoutId);
+
                         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                         const data = await response.json();
                         const generatedText = data.text;
@@ -762,25 +815,22 @@
                             ttsInput.value = generatedText;
                             antiGravityLanguageDetect(generatedText);
                             transcriptLine.innerText = `"Payload secured. Ready for acoustic initialization."`;
-                            updateUIState('idle'); // Clear the spinner before speaking
+                            updateUIState('idle'); 
+                            fireHapticHandshake('MEDIUM'); // HAPTIC TRIGGER 3: Payload Handshake
+                            playBtn.click();
                         }
                     } catch (error) {
-                        console.error("API Gateway Error:", error);
-                        // NEW FALLBACK LOGIC: Never fail, always fall back to local responses if API is down
-                        const fallbackResponses = [
-                            "My cloud connection is currently blocked, but my local neuro-symbolic engine is still active.",
-                            "I am unable to reach the Gemini API at this moment. The Vercel Gateway requires configuration.",
-                            "Sovereign vault accessed: Cloud link severed. I am operating safely in offline mode."
-                        ];
-                        const randomMsg = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-                        ttsInput.value = randomMsg;
-                        transcriptLine.innerText = `"Cloud connection failed. Routing to local vault."`;
+                        console.warn("API Offline / Blocked: Synthesizing Dynamic Offline Response", error);
+                    
+                        const localResponse = generateDynamicOfflineResponse(prompt, "cloud");
+                        ttsInput.value = localResponse;
+                        transcriptLine.innerText = `"Cloud link severed. Neuro-Symbolic Engine synthesizing fallback."`;
                         
-                        // Update UI to show graceful degradation
                         statusDisplay.innerText = "OFFLINE MODE";
                         statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
                         
-                        setTimeout(() => playBtn.click(), 200);
+                        updateUIState('idle');
+                        playBtn.click(); 
                     } finally {
                         generateAiBtn.disabled = false;
                         runVisualizer(false);
@@ -791,6 +841,8 @@
             // ==========================================
             // J-SPEAK TTS CHUNKING ENGINE & VOICE FIX
             // ==========================================
+            modeSelect.addEventListener('change', () => fireHapticHandshake('LIGHT')); // HAPTIC TRIGGER 2: Mode Switch
+
             lexiconInjectBtn.addEventListener('click', () => {
                 const selectedTerm = lexiconSelect.value;
                 if(selectedTerm) {
@@ -829,25 +881,14 @@
                     opt.textContent = `${cleanName} (${voice.lang})`;
                     
                     const vName = voice.name.toLowerCase();
-                    
-                    // SMART HUNT: Force Apple/Google standard English Male voices
                     if (activeLang === 'en') {
-                        if (vName.includes('daniel') || vName.includes('alex') || vName.includes('david')) {
-                            selectedIndex = index; 
-                        } else if (vName.includes('english') && vName.includes('male')) {
-                            fallbackIndex = index;
-                        }
+                        if (vName.includes('daniel') || vName.includes('alex') || vName.includes('david')) selectedIndex = index; 
+                        else if (vName.includes('english') && vName.includes('male')) fallbackIndex = index;
                     }
-                    
                     voiceSelect.appendChild(opt);
                 });
                 
-                // Lock the dropdown to the best available male voice
-                if (selectedIndex !== 0) {
-                    voiceSelect.selectedIndex = selectedIndex;
-                } else if (fallbackIndex !== 0) {
-                    voiceSelect.selectedIndex = fallbackIndex;
-                }
+                voiceSelect.selectedIndex = (selectedIndex !== 0) ? selectedIndex : fallbackIndex;
             }
 
             langSelect.addEventListener('change', () => {
@@ -907,7 +948,6 @@
                     statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
                     runVisualizer(false);
                 } else if (state === 'thinking') {
-                    // THE INVENTOR'S VISUAL CUE
                     statusDisplay.innerHTML = '<div class="thinking-spinner"></div> THINKING';
                     statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase flex items-center";
                 } else {
@@ -922,11 +962,7 @@
             function triggerAvatarLipSync(isSpeaking) {
                 const activeAvatar = document.querySelector('.skin-layer.active');
                 if (activeAvatar) {
-                    if (isSpeaking) {
-                        activeAvatar.classList.add('speaking');
-                    } else {
-                        activeAvatar.classList.remove('speaking');
-                    }
+                    activeAvatar.classList.toggle('speaking', isSpeaking);
                 }
             }
 
@@ -934,6 +970,7 @@
                 if (currentChunks.length === 0) {
                     updateUIState('idle');
                     triggerAvatarLipSync(false);
+                    fireHapticHandshake('MEDIUM'); // HAPTIC TRIGGER 4: Stream End
                     return;
                 }
                 
@@ -970,6 +1007,7 @@
                 if (ttsState === 'paused') {
                     speechSynthesis.resume();
                     updateUIState('playing');
+                    fireHapticHandshake('HEAVY'); // HAPTIC TRIGGER 5: Voice Mode Resume
                     return;
                 }
                 const text = ttsInput.value.trim();
@@ -978,6 +1016,7 @@
                 currentChunks = breakTextIntoChunks(text);
                 if(currentChunks.length === 0) return;
                 updateUIState('playing');
+                fireHapticHandshake('HEAVY'); // HAPTIC TRIGGER 5: Voice Mode Start
                 processChunks();
             });
 
@@ -985,6 +1024,7 @@
                 speechSynthesis.cancel();
                 updateUIState('idle');
                 triggerAvatarLipSync(false);
+                fireHapticHandshake('HEAVY'); // HAPTIC TRIGGER 6: Interruption
             });
 
             ['rate','pitch','volume'].forEach(id => {
