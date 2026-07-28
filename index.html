@@ -579,6 +579,8 @@
             const modeSelect = document.getElementById('mode-select');
             const pixarOpenMouthOverlay = document.getElementById('pixar-mouth-open');
             const femaleOpenMouthOverlay = document.getElementById('female-mouth-open');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
             
             langSelect.value = activeLang;
 
@@ -632,6 +634,20 @@
                 activeLang = langSelect.value;
                 updateVoiceList();
             };
+
+            // NETWORK STATUS LISTENER
+            const updateNetworkStatus = () => {
+                if(navigator.onLine) {
+                    statusDot.style.backgroundColor = '#10b981';
+                    statusText.innerText = "Engine Online";
+                } else {
+                    statusDot.style.backgroundColor = '#f59e0b';
+                    statusText.innerText = "Offline Vault Active";
+                }
+            };
+            window.addEventListener('online', updateNetworkStatus);
+            window.addEventListener('offline', updateNetworkStatus);
+            updateNetworkStatus();
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
@@ -694,6 +710,27 @@
                 });
             }
 
+            // DECOUPLED OFFLINE GENERATOR USING COMPROMISE.JS
+            function generateDynamicOfflineResponse(prompt, mode) {
+                let fallbackSubject = "that logic";
+                if (window.nlp) {
+                    let doc = nlp(prompt);
+                    let nouns = doc.nouns().out('array');
+                    if (nouns.length > 0) {
+                        fallbackSubject = nouns[0];
+                    }
+                }
+
+                const responses = {
+                    "Short & Punchy": `System running offline. Based on the local vault, ${fallbackSubject} is securely configured. Cloud sync is pending.`,
+                    "Genius-Philosopher": `The network is severed, yet the mind continues. Pondering ${fallbackSubject} locally reveals the strength of offline sovereign memory.`,
+                    "Comedic Roast": `You asked about ${fallbackSubject} while we have zero internet connection? Great timing. I'm running on local fumes here.`,
+                    "cloud": `Offline Mode Active. The Gemini API is currently unreachable, but I have synthesized a localized context for ${fallbackSubject}.`
+                };
+
+                return responses[mode] || responses["cloud"];
+            }
+
             if (generateAiBtn) {
                 generateAiBtn.addEventListener('click', async () => {
                     const prompt = aiPromptInput.value.trim();
@@ -740,16 +777,36 @@
                         }
                     }
 
-                    // TIER 2: VERCEL SERVERLESS PROXY CALL (CLOUD)
+                    // OFFLINE INTERCEPT: If literally no internet, skip API completely.
+                    if (!navigator.onLine || activeMode !== "cloud") {
+                        setTimeout(() => {
+                            const localResponse = generateDynamicOfflineResponse(prompt, activeMode);
+                            ttsInput.value = localResponse;
+                            transcriptLine.innerText = `"Bypassing Cloud API. Routing to Offline Neuro-Symbolic Engine."`;
+                            generateAiBtn.disabled = false;
+                            runVisualizer(false);
+                            updateUIState('idle');
+                            playBtn.click(); 
+                        }, 600);
+                        return;
+                    }
+
+                    // TIER 2: VERCEL SERVERLESS PROXY CALL (CLOUD) WITH FAIL-SAFE
                     transcriptLine.innerText = `"Consulting Cognitive Core..."`;
                     updateUIState('thinking');
                     
                     try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 8000); 
+
                         const response = await fetch('/api/gemini', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prompt: prompt, mode: activeMode, model: JAI_CONFIG.MODEL })
+                            body: JSON.stringify({ prompt: prompt, mode: activeMode, model: JAI_CONFIG.MODEL }),
+                            signal: controller.signal
                         });
+                        clearTimeout(timeoutId);
+
                         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                         const data = await response.json();
                         const generatedText = data.text;
@@ -758,24 +815,22 @@
                             ttsInput.value = generatedText;
                             antiGravityLanguageDetect(generatedText);
                             transcriptLine.innerText = `"Payload secured. Ready for acoustic initialization."`;
-                            updateUIState('idle'); // Clear the spinner before speaking
+                            updateUIState('idle'); 
                             fireHapticHandshake('MEDIUM'); // HAPTIC TRIGGER 3: Payload Handshake
+                            playBtn.click();
                         }
                     } catch (error) {
-                        console.error("API Gateway Error:", error);
-                        const fallbackResponses = [
-                            "My cloud connection is currently blocked, but my local neuro-symbolic engine is still active.",
-                            "I am unable to reach the Gemini API at this moment. The Vercel Gateway requires configuration.",
-                            "Sovereign vault accessed: Cloud link severed. I am operating safely in offline mode."
-                        ];
-                        const randomMsg = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-                        ttsInput.value = randomMsg;
-                        transcriptLine.innerText = `"Cloud connection failed. Routing to local vault."`;
+                        console.warn("API Offline / Blocked: Synthesizing Dynamic Offline Response", error);
+                    
+                        const localResponse = generateDynamicOfflineResponse(prompt, "cloud");
+                        ttsInput.value = localResponse;
+                        transcriptLine.innerText = `"Cloud link severed. Neuro-Symbolic Engine synthesizing fallback."`;
                         
                         statusDisplay.innerText = "OFFLINE MODE";
                         statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
                         
-                        setTimeout(() => playBtn.click(), 200);
+                        updateUIState('idle');
+                        playBtn.click(); 
                     } finally {
                         generateAiBtn.disabled = false;
                         runVisualizer(false);
