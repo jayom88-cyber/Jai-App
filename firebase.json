@@ -1,0 +1,41 @@
+{
+"hosting": [
+{
+"target": "jai-app",
+"public": ".",
+"ignore": [
+"firebase.json",
+"/.*",
+"/node_modules/"
+],
+"rewrites": [
+{
+"source": "/api/gemini",
+"function": "geminiProxy"
+},
+{
+"source": "",
+"destination": "/index.html"
+}
+]
+}
+],
+"functions": [
+{
+"codebase": "default",
+"source": "functions"
+},
+{
+"source": "jai-bridge",
+"codebase": "jai-bridge",
+"disallowLegacyRuntimeConfig": true,
+"ignore": [
+"node_modules",
+".git",
+"firebase-debug.log",
+"firebase-debug..log",
+".local"
+]
+}
+]
+}
