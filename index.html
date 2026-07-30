@@ -5,24 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant</title>
     
-    <!-- Resolved Favicon 404 Error -->
+    <!-- Favicon -->
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     
-    <!-- Compiled Tailwind CSS local build reference (Ensure Tailwind CLI is running) -->
+    <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
     
-    <!-- Tailwind CDN Fallback (Just in case local output.css isn't built yet) -->
+    <!-- Tailwind CDN Fallback -->
     <script src="https://cdn.tailwindcss.com"></script>
-
     <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Math.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
-
     <!-- ENGLISH JS (COMPROMISE NLP) -->
     <script src="https://unpkg.com/compromise"></script>
-
-    <!-- JAI OFFLINE HISTORY VAULT (NEW!) -->
+    <!-- JAI OFFLINE HISTORY VAULT -->
     <script src="./jai_history.js"></script>
-
     <style>
         /* =========================================================================
            CORE SYSTEM ARCHITECTURE & FIXED UTILITY DESIGN TOKENS
@@ -86,10 +82,6 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
-
-        /* =========================================================================
-           THINKING STATE WAVE FUNCTION (THE INVENTOR'S SPINNER)
-           ========================================================================= */
         .thinking-spinner {
             display: inline-block;
             width: 20px;
@@ -104,10 +96,6 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        /* =========================================================================
-           VISUAL BACKGROUND FX (PROCEDURAL GALAXY VORTEX)
-           ========================================================================= */
         @keyframes galaxyRotate {
             0% { transform: translate3d(-50%, -50%, 0) rotate(0deg) scale3d(1, 1, 1); }
             50% { transform: translate3d(-50%, -50%, 0) rotate(180deg) scale3d(1.1, 1.1, 1); }
@@ -137,10 +125,6 @@
         .star-1 { top: 5%; right: 10%; animation: shootingStar 18s linear infinite 3s; }
         .star-2 { top: 25%; right: -10%; animation: shootingStar 35s linear infinite 15s; }
         .star-3 { top: 10%; right: 5%; animation: shootingStar 45s linear infinite 28s; }
-
-        /* =========================================================================
-           RESPONSIVE GRID SYSTEM (MOBILE-FIRST - DE-CRAMPED SPECIFICATION)
-           ========================================================================= */
         .stage-container {
             flex: 1; width: 100%; max-width: 1400px; margin: 0 auto;
             display: grid; grid-template-columns: 360px 1fr; gap: 24px; padding: 24px; min-height: 0; z-index: 10;
@@ -164,10 +148,6 @@
             main { order: 1; min-height: 55vh; flex: 0 0 auto; width: 100%; border-radius: 16px; padding: 16px; }
             aside { order: 2; overflow: visible; width: 100%; padding-right: 0; }
         }
-
-        /* =========================================================================
-           AVATAR SANCTUARY & GPU PULSE CONFIGURATION
-           ========================================================================= */
         .avatar-lens {
             position: relative; flex: 1; width: 100%; display: flex; align-items: center; justify-content: center;
             min-height: 180px; padding: 10px 0; z-index: 5;
@@ -190,29 +170,24 @@
        
         .skin-layer.active { opacity: 1; z-index: 2; animation: corePulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: auto;}
         
-        /* AVATAR LIP-SYNC ANIMATION (FIXED: Smooth Graceful Pulse) */
         @keyframes speakPulse {
             0% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) brightness(1); }
             50% { transform: scale3d(1.02, 1.02, 1); filter: drop-shadow(0 0 35px var(--accent-color)) brightness(1.15); }
             100% { transform: scale3d(1, 1, 1); filter: drop-shadow(0 0 15px var(--accent-color)) brightness(1); }
         }
         .skin-layer.speaking { animation: speakPulse 2s ease-in-out infinite; pointer-events: auto; z-index: 3;}
-
-        /* JAI-VERSE LEVEL 3 LIP-SYNC OVERLAY CSS */
         .viseme-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 0.05s ease-in-out; /* Ultra fast for lip sync */
+            opacity: 0; transition: opacity 0.05s ease-in-out;
             display: flex; align-items: center; justify-content: center;
         }
         .viseme-overlay img {
             max-height: 100%; object-fit: contain; border-radius: 24px;
         }
-
         .magic-glow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .magic-glow-hover:hover { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow); color: var(--accent-color); border-color: var(--accent-color); transform: scale(1.05); }
         
         .eq-matrix { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; margin-bottom: 16px; z-index: 10;}
-        /* Note: transition duration lowered from 0.15s to 0.05s to match speech frequency speed */
         .eq-bar { width: 5px; height: 8px; background-color: var(--accent-color); border-radius: 3px; transform: scaleY(1); transform-origin: bottom; will-change: transform; transition: transform 0.05s linear; }
         
         .transcript-deck { width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; z-index: 10; backdrop-filter: blur(10px); }
@@ -245,6 +220,9 @@
     </style>
 </head>
 <body class="theme-dark" data-session-state="active" data-timeline-fork="main">
+    <!-- HIDDEN OCULAR NERVE CANVAS & VIDEO FEED FOR BASE64 VISUAL PROCESSING -->
+    <video id="ocular-video-element" style="display:none;" autoplay playsinline></video>
+    <canvas id="ocular-canvas-element" style="display:none;"></canvas>
     <div class="flex flex-col h-screen absolute inset-0">
         <header class="glass-panel">
             <div class="brand-block">
@@ -271,7 +249,6 @@
         </header>
         <div class="stage-container">
             <main class="glass-panel custom-scroll">
-                <!-- V7.0 ARCHITECTURE: COGNITIVE PROCESSING BUS (HIDDEN ANCHOR) -->
                 <div id="cognitive-processing-bus" aria-hidden="true" style="display: none;"></div>
                 
                 <div class="galaxy-stage" aria-hidden="true"></div>
@@ -279,72 +256,65 @@
                 <div class="shooting-star star-2" aria-hidden="true"></div>
                 <div class="shooting-star star-3" aria-hidden="true"></div>
                 
-                <!-- AVATAR SANCTUARY WITH LEVEL 3 LIP SYNC HTML ADDED -->
+                <!-- AVATAR SANCTUARY WITH LIP SYNC OVERLAY -->
                 <div class="avatar-lens" role="region" aria-label="AI Avatar Display">
-                    
                     <div id="skin-neutral" class="skin-layer active">
-                        <img src="https://meshekatlan.com/wp-content/uploads/2026/07/Jai.-2026-Hero-Image-Logo.png" alt="Jai Core Mandala" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jai+Core'">
+                        <img src="./Jai- Ai 2026 Hero Image Femal.png" alt="Jai Core Mandala" onerror="this.src='./femal_gravatar_open.png'">
                     </div>
                     
                     <div id="skin-real" class="skin-layer">
-                        <img src="./j_rio.jpg" alt="J Rio Realistic Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=Jay+(Real)'">
+                        <img src="./j_rio.jpg" alt="J Rio Realistic Avatar" onerror="this.src='./IMG_0296.jpg'">
                     </div>
                     
-                    <!-- J PIXARS WITH VISEME STACK (ASSET PATH CORRECTED) -->
                     <div id="skin-pixar" class="skin-layer">
-                        <img src="./j_pixars.jpg" alt="J Pixars Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars'">
+                        <img src="./j_pixars.jpeg" alt="J Pixars Avatar" onerror="this.src='./Jay-Pixars-me.jpg'">
                         <div id="pixar-mouth-open" class="viseme-overlay">
-                            <img src="./j_pixars_open.jpg" alt="J Pixars Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/00ffff?text=J+Pixars+(Speaking)'">
+                            <img src="./j_pixars.jpeg" alt="J Pixars Speaking">
                         </div>
                     </div>
-                    
                     <div id="skin-female" class="skin-layer">
-                        <img src="./female_gravatar.png" alt="Jai Female Synthesized Avatar" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar'">
+                        <img src="./female_gravatar.png" alt="Female Synth Avatar">
                         <div id="female-mouth-open" class="viseme-overlay">
-                            <img src="./female_gravatar_open.png" alt="Jai Female Synthesized Avatar Speaking" onerror="this.src='https://placehold.co/400x500/0f172a/ff00ff?text=Female+Avatar+(Speaking)'">
+                            <img src="./femal_gravatar_open.png" alt="Female Synth Speaking">
                         </div>
                     </div>
                 </div>
                
-                <div class="eq-matrix" role="presentation" aria-hidden="true">
-                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                <div class="eq-matrix" aria-label="Audio Visualizer Waveform">
+                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
                 </div>
-                
-                <section class="transcript-deck flex flex-col gap-3 w-full" aria-label="AI Command and Transcript Deck">
-                    <div class="flex justify-between items-center px-1">
-                        <p id="transcript-line" class="text-xs font-mono text-slate-300 italic" aria-live="polite">"Awaiting acoustic authorization or text input..."</p>
-                        <div class="flex items-center gap-2">
-                            <span id="tts-status" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" aria-live="polite">IDLE</span>
+                <div class="transcript-deck">
+                    <p id="transcript-line" class="text-xs text-slate-300 font-mono italic text-center text-teal-300">"Sovereign Vault & Local Engines Standing By..."</p>
+                </div>
+                <div class="w-full mt-4">
+                    <div class="relative flex items-center">
+                        <input type="text" id="ai-prompt-input" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-3 pl-4 pr-24 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-400" placeholder="Ask Jai (Math, History, Lexicon, Dictionary)...">
+                        <div class="absolute right-2 flex items-center gap-1">
+                            <button id="mic-btn" class="p-2 text-slate-400 hover:text-teal-300 transition-colors" title="Voice Input (STT)">
+                                🎤
+                            </button>
+                            <button id="prompt-speaker-btn" class="p-2 text-slate-400 hover:text-teal-300 transition-colors" title="Read Prompt Aloud">
+                                🔊
+                            </button>
                         </div>
                     </div>
-                   
-                    <div class="relative w-full group">
-                        <label for="ai-prompt-input" class="sr-only">AI Prompt Input</label>
-                        <textarea id="ai-prompt-input" class="w-full bg-slate-900/70 border border-slate-600 rounded-xl p-3 pb-10 text-sm h-16 focus:outline-none focus:border-teal-500 transition-colors text-slate-200 placeholder-slate-500 custom-scroll resize-none" placeholder="Ask Gemini (Thought Engine)..." aria-label="Enter your prompt for the AI"></textarea>
-                       
-                        <button id="prompt-speaker-btn" class="absolute bottom-2 left-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20 magic-glow-hover" title="Read Prompt/Response Aloud" aria-label="Read prompt aloud">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5 10v4a2 2 0 002 2h2.586l3.293 3.293A1 1 0 0014 18.5V5.5a1 1 0 00-1.707-.707L9.586 8H7a2 2 0 00-2 2z" />
-                            </svg>
-                        </button>
-                        <button id="mic-btn" class="absolute bottom-2 right-2 p-1.5 bg-slate-800 rounded-full border border-slate-600 text-slate-300 shadow-lg z-20 magic-glow-hover" title="Hold/Click to Speak (STT)" aria-label="Activate speech to text input">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                            </svg>
+                    <div class="mt-2 flex justify-between items-center">
+                        <span id="tts-status" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">IDLE</span>
+                        <button id="generate-ai-btn" class="bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg transition-transform active:scale-95">
+                            Generate (AI Core)
                         </button>
                     </div>
-                    <button id="generate-ai-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-lg text-[10px] sm:text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(79,70,229,0.4)]" aria-label="Generate AI response">
-                        <span>🧠</span> <span>Generate Response</span>
-                    </button>
-                </section>
+                </div>
             </main>
-
             <aside class="custom-scroll" aria-label="Application Controls and Data Sources">
                 <section class="glass-panel panel-card mb-4" aria-label="Operation Control Configuration">
                     <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Operation Mode</h2>
                     <div class="relative w-full">
                         <select id="mode-select" class="w-full bg-slate-900/80 border border-slate-600 text-slate-300 text-xs rounded-lg p-2.5 outline-none focus:border-indigo-400 cursor-pointer">
-                            <option value="cloud">Cloud (Gemini API)</option>
+                            <option value="cloud">Cloud (Gemini API / Hybrid)</option>
                             <option value="Short & Punchy">Short & Punchy (Offline)</option>
                             <option value="Genius-Philosopher">Genius-Philosopher (Offline)</option>
                             <option value="Comedic Roast">Comedic Roast (Offline)</option>
@@ -358,29 +328,27 @@
                             <p class="text-[9px] uppercase opacity-60">Licensing Plan</p>
                             <h3 class="text-[11px] font-extrabold text-emerald-500">Standard ($20/yr)</h3>
                         </div>
-                        <button onclick="SystemApp.executeVaultCheckout()" class="text-[9px] uppercase font-bold text-teal-400 bg-teal-400/10 border border-teal-400/40 px-2 py-1 rounded" aria-label="Upgrade licensing plan">Upgrade</button>
+                        <button onclick="SystemApp.executeVaultCheckout()" class="text-[9px] uppercase font-bold text-teal-400 bg-teal-400/10 border border-teal-400/40 px-2 py-1 rounded">Upgrade</button>
                     </div>
                 </section>
                 <section class="glass-panel panel-card mb-4" aria-label="Lexicon Integration">
                     <h2 class="text-[0.65rem] text-indigo-400 border-l-2 border-indigo-400 pl-1.5 font-bold uppercase tracking-wider mb-2">The Jai-Verse Lexicon</h2>
-                    <label for="lexicon-select" class="sr-only">Select Lexicon Terminology</label>
-                    <select id="lexicon-select" class="w-full bg-slate-900/80 border border-slate-600 text-slate-300 text-xs rounded-lg p-2 outline-none mb-3 focus:border-indigo-400 cursor-pointer" aria-label="Select a lexicon term">
+                    <select id="lexicon-select" class="w-full bg-slate-900/80 border border-slate-600 text-slate-300 text-xs rounded-lg p-2 outline-none mb-3 focus:border-indigo-400 cursor-pointer">
                         <option value="">Select terminology...</option>
                         <option value="AeroScribe: To compose code, music, or narrative in a fluid, intuitive manner...">AeroScribe</option>
                         <option value="Chronoforge: To shape historical material into a structured narrative...">Chronoforge</option>
                         <option value="Mythocode: A programming approach using ancestral memory...">Mythocode</option>
                         <option value="OmniStack: Development environment extending beyond front-end...">OmniStack</option>
                     </select>
-                    <button id="lexicon-inject-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-lg active:scale-95" aria-label="Inject selected lexicon term into prompter">Inject to Prompter</button>
+                    <button id="lexicon-inject-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-lg active:scale-95">Inject to Prompter</button>
                 </section>
-
                 <section class="glass-panel panel-card mb-4" aria-label="Acoustic Parameters">
                     <h2 class="text-[0.65rem] text-accent-color border-l-2 border-accent-color pl-1.5 font-bold uppercase tracking-wider mb-2">Acoustic Parameters</h2>
                    
                     <div class="mb-4">
                         <label for="lang-select" class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Target Language</label>
-                        <select id="lang-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" aria-label="Select target language for speech synthesis">
-                            <option value="en">English (US/UK)</option>
+                        <select id="lang-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                            <option value="en">English (US Microsoft Dave / Female Primary)</option>
                             <option value="es">Español (Spanish)</option>
                             <option value="nah">Nahuatl (Indigenous)</option>
                             <option value="hi">हिंदी (Hindi)</option>
@@ -397,57 +365,55 @@
                     </div>
                     <div class="mb-4">
                         <label for="voice-select" class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Acoustic Profile</label>
-                        <select id="voice-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" aria-label="Select voice for speech synthesis"></select>
+                        <select id="voice-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all"></select>
                     </div>
-                    <label for="tts-input" class="sr-only">Speech Synthesis Text Input</label>
-                    <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed text-emerald-300 font-mono" placeholder="Paste your raw script here, fetch from the databank, or inject Lexicon terms..." aria-label="Text to be spoken by the AI"></textarea>
+                    <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed text-emerald-300 font-mono" placeholder="Paste your raw script here, fetch from the databank, or inject Lexicon terms..."></textarea>
                     <div class="grid grid-cols-2 gap-3 mb-5">
-                        <button id="play-btn" class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] active:scale-95 flex items-center justify-center gap-2" aria-label="Initialize or pause speech synthesis">
+                        <button id="play-btn" class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] active:scale-95 flex items-center justify-center gap-2">
                             <span id="play-icon">▶</span> <span id="play-text" class="uppercase tracking-wide">Initialize</span>
                         </button>
-                        <button id="stop-btn" class="bg-slate-800 hover:bg-red-600 border border-slate-700 hover:border-red-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2" aria-label="Terminate speech synthesis">
+                        <button id="stop-btn" class="bg-slate-800 hover:bg-red-600 border border-slate-700 hover:border-red-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2">
                             <span>■</span> <span class="uppercase tracking-wide">Terminate</span>
                         </button>
                     </div>
                     <div class="space-y-4 text-sm bg-slate-900/50 p-4 rounded-xl border border-slate-700">
                         <div>
                             <label for="rate" class="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1"><span class="text-slate-400">Speed</span><span id="rate-val" class="font-mono text-teal-300">0.96</span></label>
-                            <input type="range" id="rate" min="0.5" max="2" step="0.01" value="0.96" aria-label="Speech rate control">
+                            <input type="range" id="rate" min="0.5" max="2" step="0.01" value="0.96">
                         </div>
                         <div>
                             <label for="pitch" class="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1"><span class="text-slate-400">Pitch</span><span id="pitch-val" class="font-mono text-teal-300">1.00</span></label>
-                            <input type="range" id="pitch" min="0" max="2" step="0.01" value="1.0" aria-label="Speech pitch control">
+                            <input type="range" id="pitch" min="0" max="2" step="0.01" value="1.0">
                         </div>
                         <div>
                             <label for="volume" class="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1"><span class="text-slate-400">Volume</span><span id="volume-val" class="font-mono text-teal-300">1.00</span></label>
-                            <input type="range" id="volume" min="0" max="1" step="0.01" value="1.0" aria-label="Speech volume control">
+                            <input type="range" id="volume" min="0" max="1" step="0.01" value="1.0">
                         </div>
                     </div>
                 </section>
             </aside>
         </div>
         <footer class="glass-panel" role="contentinfo">
-            <div class="btn-pill-group w-full md:w-auto mb-2 md:mb-0" aria-label="Avatar skin selection">
+            <div class="btn-pill-group w-full md:w-auto mb-2 md:mb-0">
                 <button onclick="SystemApp.toggleSkin('neutral')" id="skin-btn-neutral" class="btn-pill active">Core Engine</button>
                 <button onclick="SystemApp.toggleSkin('real')" id="skin-btn-real" class="btn-pill">J Rio</button>
                 <button onclick="SystemApp.toggleSkin('pixar')" id="skin-btn-pixar" class="btn-pill">J Pixars</button>
                 <button onclick="SystemApp.toggleSkin('female')" id="skin-btn-female" class="btn-pill">Female Synth</button>
             </div>
             <div class="action-cluster flex justify-center w-full md:w-auto gap-4">
-                <button id="ocular-nerve-btn" class="btn-action-square shadow-[0_0_15px_rgba(20,184,166,0.2)] active:scale-95 transition-transform" title="Activate Ocular Nerve (Camera)" style="color: #14b8a6; border-color: rgba(20, 184, 166, 0.4);" aria-label="Activate camera feed">
+                <button id="ocular-nerve-btn" class="btn-action-square shadow-[0_0_15px_rgba(20,184,166,0.2)] active:scale-95 transition-transform" title="Activate Ocular Nerve (Base64 Camera)" style="color: #14b8a6; border-color: rgba(20, 184, 166, 0.4);">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
                         <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.18l1.43-1.43a1.65 1.65 0 012.333 0L6.2 9.2a1.65 1.65 0 010 2.333l-1.773 1.773a1.65 1.65 0 01-2.333 0l-1.43-1.43zM17.667 8.16l1.43 1.43a1.65 1.65 0 010 2.333l-1.43 1.43a1.65 1.65 0 01-2.333 0L13.8 12.8a1.65 1.65 0 010-2.333l1.773-1.773a1.65 1.65 0 012.333 0z" clip-rule="evenodd"/>
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 5a1 1 0 112 0 1 1 0 01-2 0z" clip-rule="evenodd"/>
                     </svg>
                 </button>
-                <button onclick="SystemApp.forkTimeline()" class="btn-action-square shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 transition-transform" title="Fork Timeline" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);" aria-label="Fork current timeline to spawn isolated scenario">
+                <button onclick="SystemApp.forkTimeline()" class="btn-action-square shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 transition-transform" title="Fork Timeline" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">
                     <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                 </button>
             </div>
         </footer>
     </div>
-    
     <script>
         // ==========================================
         // SYSTEM CONTROLS & GLOBAL UI MANAGER
@@ -456,126 +422,124 @@
             setTheme: function(theme) {
                 document.body.className = `theme-${theme}`;
                 document.querySelectorAll('#theme-dark-btn, #theme-sepia-btn, #theme-light-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById(`theme-${theme}-btn`).classList.add('active');
+                const targetBtn = document.getElementById(`theme-${theme}-btn`);
+                if (targetBtn) targetBtn.classList.add('active');
             },
             toggleSkin: function(skinId) {
                 document.querySelectorAll('.skin-layer').forEach(el => el.classList.remove('active'));
-                document.getElementById(`skin-${skinId}`).classList.add('active');
-                document.querySelectorAll('.btn-pill-group:last-of-type .btn-pill').forEach(btn => btn.classList.remove('active'));
-                document.getElementById(`skin-btn-${skinId}`).classList.add('active');
+                const targetSkin = document.getElementById(`skin-${skinId}`);
+                if (targetSkin) targetSkin.classList.add('active');
+                
+                document.querySelectorAll('.btn-pill-group .btn-pill').forEach(btn => btn.classList.remove('active'));
+                const targetBtn = document.getElementById(`skin-btn-${skinId}`);
+                if (targetBtn) targetBtn.classList.add('active');
             },
             executeVaultCheckout: function() {
-                alert("Vault Checkout: Stripe/CashApp integration pending deployment.");
+                alert("Sovereign Vault Checkout: Tier 1 offline local processing active.");
             },
             forkTimeline: function() {
-                alert("Timeline Forked: New hypothetical scenario branch created.");
+                alert("Timeline Forked: New sovereign execution path opened.");
             }
         };
-
-        // ==========================================
-        // SYSTEM VARIABLES & OFFLINE KNOWLEDGE VAULT
-        // ==========================================
         const JAI_CONFIG = { MODEL: "gemini-1.5-flash" };
-
-        const JAI_LEXICON = { /* ... remains the same ... */ };
-
-        // NEW FUZZY-MATCHING ROUTER
-        const JAI_KEYWORD_ROUTER = [
-            {
-                keywords: ["who are you", "what are you", "your name"],
-                response: "I am Jai, an OmniStack Digital Assistant. I function as a thought-partner and a text-to-speech engine, running on a local-first neuro-symbolic architecture."
-            },
-            {
-                keywords: ["creator", "daddy", "who made you", "your father"],
-                response: "I was created by the inventor. He is my architect."
+        const JAI_LEXICON = {
+            "core": {
+                "aeroscribe": "AeroScribe: To compose code, music, or narrative in a fluid, intuitive manner.",
+                "chronoforge": "Chronoforge: To shape historical material into a structured narrative.",
+                "mythocode": "Mythocode: A programming approach using ancestral memory and symbolic logic.",
+                "omnistack": "OmniStack: Development environment extending beyond traditional front-end boundaries."
             }
-        ];
-
-        // UPGRADED OFFLINE ROUTER WITH FUZZY MATCHING
+        };
+        let JAI_LOCAL_DICTIONARY = {};
+        fetch('./dictionary.json')
+            .then(res => res.json())
+            .then(data => {
+                JAI_LOCAL_DICTIONARY = data;
+                console.log("JAI American Standard English & Lexicon Dictionary loaded:", Object.keys(data).length, "entries.");
+            })
+            .catch(err => console.warn("Dictionary load notice:", err));
+        // ==========================================
+        // TIER 1 NEURO-SYMBOLIC OFFLINE ENGINE
+        // ==========================================
         function processTier1Offline(prompt) {
-            const p = prompt.toLowerCase();
-
-            // 1. Check Keyword Router (Fuzzy Match)
-            for (const rule of JAI_KEYWORD_ROUTER) {
-                for (const keyword of rule.keywords) {
-                    if (p.includes(keyword)) {
-                        return rule.response;
+            const cleanPrompt = prompt.trim();
+            const p = cleanPrompt.toLowerCase();
+            // 1. Math.js Calculator Engine
+            if (typeof math !== 'undefined' && (/[\d+\-*/^()=]/.test(cleanPrompt) || p.startsWith('calculate') || p.startsWith('math') || p.includes('what is'))) {
+                try {
+                    let expr = cleanPrompt.replace(/what is|calculate|math|\?/gi, '').trim();
+                    if (expr.length > 0 && /^[0-9+\-*/^() .eEsqrtabsincostanlog]+$/i.test(expr)) {
+                        const result = math.evaluate(expr);
+                        return `Neuro-Symbolic Math Engine: ${expr} = ${result}`;
+                    }
+                } catch (e) {
+                    // Not a valid standalone math expression, continue routing
+                }
+            }
+            // 2. Dictionary & Lexicon Lookup Engine
+            const defKeywords = ['define', 'definition of', 'what does', 'meaning of', 'jai lexicon', 'lexicon'];
+            for (const keyw of defKeywords) {
+                if (p.includes(keyw)) {
+                    const targetWord = p.replace(keyw, '').replace(/[\?\.!"]/g, '').trim();
+                    if (JAI_LOCAL_DICTIONARY[targetWord]) {
+                        return `American Standard English Vault: "${targetWord}" is defined as: ${JAI_LOCAL_DICTIONARY[targetWord]}`;
+                    }
+                    // Check partial match
+                    for (const dictKey in JAI_LOCAL_DICTIONARY) {
+                        if (dictKey === targetWord || targetWord.includes(dictKey)) {
+                            return `American Standard English Vault: "${dictKey}" is defined as: ${JAI_LOCAL_DICTIONARY[dictKey]}`;
+                        }
                     }
                 }
             }
-            
-            // 2. Check History Vault (Subject Match)
+            // Direct Lexicon Term Check
+            for (const dictKey in JAI_LOCAL_DICTIONARY) {
+                if (p === dictKey || p === `what is ${dictKey}` || p === `define ${dictKey}`) {
+                    return `JAI Lexicon Entry: "${dictKey}" — ${JAI_LOCAL_DICTIONARY[dictKey]}`;
+                }
+            }
+            // 3. Pan-American History Vault Search (3000 BCE to Present)
             if (typeof JAI_HISTORY_VAULT !== 'undefined') {
                 for (const entry of JAI_HISTORY_VAULT) {
-                    if (p.includes(entry.subject.toLowerCase())) {
-                        return `Accessing Sovereign Vault Data. Subject: ${entry.subject}. ${entry.description}`;
+                    const subLower = entry.subject.toLowerCase();
+                    if (p.includes(subLower) || (entry.tags && entry.tags.some(tag => p.includes(tag)))) {
+                        return `Pan-American Sovereign Vault [${entry.region} ${entry.era}]: ${entry.subject} (${entry.type}). ${entry.description}`;
                     }
                 }
             }
-            
-            // 3. Check Lexicon (Term Match)
-            for (const category in JAI_LEXICON) {
-                for (const key in JAI_LEXICON[category]) {
-                    if (p.includes(key.replace(/_/g, ' '))) {
-                        return JAI_LEXICON[category][key];
-                    }
-                }
+            // 4. Keyword Router
+            if (p.includes('who are you') || p.includes('your name')) {
+                return "I am Jai, an OmniStack Digital Assistant and thought-partner, running on a local neuro-symbolic architecture with speech chunking.";
             }
-            
-            return null; // No offline match found
+            if (p.includes('creator') || p.includes('who made you')) {
+                return "I was created by the sovereign lead engineer of the JaiVerse.";
+            }
+            return null;
         }
-
         // ==========================================
-        // HARDWARE & PERMISSIONS
+        // HARDWARE & PERMISSIONS HANDSHAKE
         // ==========================================
         async function initHardwareSandbox() {
             try {
-                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    console.log("Hardware Handshake: Microphone access granted.");
-                    stream.getTracks().forEach(track => track.stop());
-                }
                 if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); 
+                    window.speechSynthesis.cancel();
                     console.log("Hardware Handshake: TTS Engine online.");
                 }
             } catch (err) {
-                console.warn("Hardware Handshake Notice: User interaction required to unlock audio/mic hooks.", err);
+                console.warn("Hardware Handshake Notice:", err);
             }
         }
         initHardwareSandbox();
-
-        // OCULAR NERVE CAMERA FUNCTION (NEW)
-        async function initOcularNerve() {
-            console.log("Ocular Nerve: Activating camera hardware link...");
-            transcriptLine.innerText = `"Requesting user permission for visual feed..."`;
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                console.log("Ocular Nerve: Camera access granted.", stream);
-                transcriptLine.innerText = `"Visual hardware link established successfully."`;
-                // Placeholder: In a real app, you would route this 'stream' to a <video> element.
-                // For now, we stop it to turn the camera light off.
-                stream.getTracks().forEach(track => track.stop());
-            } catch (err) {
-                console.error("Ocular Nerve Error:", err);
-                transcriptLine.innerText = `"Camera access denied by user or system."`;
-                alert("Camera permission was denied. Please grant access in your browser settings to use this feature.");
-            }
-        }
-
         // ==========================================
-        // MAIN DOMContentLoaded WRAPPER
+        // MAIN DOMCONTENTLOADED WRAPPER
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // --- CAPACITOR HAPTICS CORE ENGINE ---
-            const fireHapticHandshake = async (style = 'MEDIUM') => { /* ... remains the same ... */ };
-
-            // HOISTED STATE & DOM ELEMENTS
             let allSystemVoices = [], ttsState = 'idle', currentChunks = [], currentUtterance = null, animationFrameId = null, recognition = null, isRecording = false, isLanguageLocked = false;
+            let currentOcularBase64 = null;
+            
             const deviceLang = (navigator.language || 'en').split('-')[0];
             const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la', 'zh', 'ja', 'ru', 'ar'];
             let activeLang = supportedLangs.includes(deviceLang) ? deviceLang : 'en';
-
             const dom = {
                 aiPromptInput: document.getElementById('ai-prompt-input'),
                 generateAiBtn: document.getElementById('generate-ai-btn'),
@@ -598,27 +562,336 @@
                 statusDot: document.getElementById('status-dot'),
                 statusText: document.getElementById('status-text'),
                 ocularNerveBtn: document.getElementById('ocular-nerve-btn'),
+                ocularVideo: document.getElementById('ocular-video-element'),
+                ocularCanvas: document.getElementById('ocular-canvas-element')
             };
-            
-            dom.langSelect.value = activeLang;
-
-            // ... rest of the logic, heavily refactored ...
-
-            // NETWORK STATUS LISTENER (NEW)
-            const updateNetworkStatus = () => {
-                if(navigator.onLine) {
-                    dom.statusDot.style.backgroundColor = '#10b981';
-                    dom.statusText.innerText = "Engine Online";
-                } else {
-                    dom.statusDot.style.backgroundColor = '#f59e0b';
-                    dom.statusText.innerText = "Offline Vault Active";
+            if (dom.langSelect) dom.langSelect.value = activeLang;
+            // ==========================================
+            // OCULAR NERVE CAMERA BASE64 CAPTURE ENGINE
+            // ==========================================
+            async function triggerOcularNerveBase64Capture() {
+                if (!dom.transcriptLine) return;
+                dom.transcriptLine.innerText = `"Activating Ocular Nerve visual feed..."`;
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                    dom.ocularVideo.srcObject = stream;
+                    await dom.ocularVideo.play();
+                    // Allow camera sensor 300ms to warm up exposure
+                    setTimeout(() => {
+                        const width = dom.ocularVideo.videoWidth || 640;
+                        const height = dom.ocularVideo.videoHeight || 480;
+                        dom.ocularCanvas.width = width;
+                        dom.ocularCanvas.height = height;
+                        const ctx = dom.ocularCanvas.getContext('2d');
+                        ctx.drawImage(dom.ocularVideo, 0, 0, width, height);
+                        // Capture Base64 JPEG data string
+                        currentOcularBase64 = dom.ocularCanvas.toDataURL('image/jpeg', 0.85);
+                        
+                        // Turn off camera stream light
+                        stream.getTracks().forEach(track => track.stop());
+                        console.log("Ocular Base64 Image Payload Captured successfully. Length:", currentOcularBase64.length);
+                        dom.transcriptLine.innerText = `"Ocular feed captured in Base64 (${width}x${height}). Visual context ready."`;
+                        
+                        if (dom.aiPromptInput && !dom.aiPromptInput.value) {
+                            dom.aiPromptInput.value = "[Visual Base64 Feed Attached] Describe what you see or analyze this frame.";
+                        }
+                    }, 300);
+                } catch (err) {
+                    console.error("Ocular Camera Error:", err);
+                    dom.transcriptLine.innerText = `"Camera feed unavailable or permission denied."`;
                 }
+            }
+            if (dom.ocularNerveBtn) {
+                dom.ocularNerveBtn.addEventListener('click', triggerOcularNerveBase64Capture);
+            }
+            // ==========================================
+            // WAVEFORM VISUALIZER & LIP SYNC
+            // ==========================================
+            const runVisualizer = (isSpeaking) => {
+                const bars = document.querySelectorAll('.eq-bar');
+                if (!isSpeaking) {
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                    bars.forEach(bar => bar.style.transform = 'scaleY(1)');
+                    if (dom.pixarMouth) dom.pixarMouth.style.opacity = '0';
+                    if (dom.femaleMouth) dom.femaleMouth.style.opacity = '0';
+                    return;
+                }
+                function renderFrame() {
+                    const simulatedVolume = Math.random();
+                    bars.forEach(bar => {
+                        const magnitude = (Math.random() * 1.5) + (simulatedVolume * 1.2) + 1;
+                        bar.style.transform = `scaleY(${magnitude})`;
+                    });
+                    const isMouthOpen = simulatedVolume > 0.45;
+                    if (dom.pixarMouth) dom.pixarMouth.style.opacity = isMouthOpen ? '1' : '0';
+                    if (dom.femaleMouth) dom.femaleMouth.style.opacity = isMouthOpen ? '1' : '0';
+                    animationFrameId = requestAnimationFrame(renderFrame);
+                }
+                renderFrame();
             };
-            window.addEventListener('online', updateNetworkStatus);
-            window.addEventListener('offline', updateNetworkStatus);
-            updateNetworkStatus();
-
-            // DECOUPLED DYNAMIC OFFLINE GENERATOR (NEW)
+            const antiGravityLanguageDetect = (text) => {
+                if (!text || isLanguageLocked) return;
+                if (/[\u0900-\u097F]/.test(text)) dom.langSelect.value = 'hi';
+                else if (/[áéíóúñ¿¡]/i.test(text)) dom.langSelect.value = 'es';
+                else dom.langSelect.value = 'en';
+                
+                activeLang = dom.langSelect.value;
+                updateVoiceList();
+            };
+            // ==========================================
+            // WEB SPEECH STT RECOGNITION
+            // ==========================================
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition && dom.micBtn) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+               
+                recognition.onstart = () => {
+                    isRecording = true;
+                    dom.micBtn.classList.add('mic-active');
+                    dom.aiPromptInput.placeholder = "Listening... Speak now.";
+                    dom.transcriptLine.innerText = '"Audio channel open. Transcribing..."';
+                    runVisualizer(true);
+                };
+               
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    dom.aiPromptInput.value = dom.aiPromptInput.value ? dom.aiPromptInput.value + " " + transcript : transcript;
+                    dom.transcriptLine.innerText = `"${transcript}"`;
+                };
+               
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    dom.transcriptLine.innerText = '"Microphone error. Check permissions."';
+                };
+               
+                recognition.onend = () => {
+                    isRecording = false;
+                    dom.micBtn.classList.remove('mic-active');
+                    runVisualizer(false);
+                    if(!dom.aiPromptInput.value.trim()) {
+                        dom.aiPromptInput.placeholder = "Ask Jai (Math, History, Lexicon, Dictionary)...";
+                    }
+                };
+                dom.micBtn.addEventListener('click', () => {
+                    if (isRecording) {
+                        recognition.stop();
+                    } else {
+                        recognition.lang = dom.langSelect.value === 'la' ? 'it-IT' : dom.langSelect.value;
+                        recognition.start();
+                    }
+                });
+            } else if (dom.micBtn) {
+                dom.micBtn.style.display = 'none';
+            }
+            if (dom.promptSpeakerBtn) {
+                dom.promptSpeakerBtn.addEventListener('click', () => {
+                    const textToRead = dom.aiPromptInput.value.trim();
+                    if (!textToRead) return;
+                    dom.ttsInput.value = textToRead;
+                    antiGravityLanguageDetect(textToRead);
+                    setTimeout(() => dom.playBtn.click(), 200);
+                });
+            }
+            // ==========================================
+            // DIGITAL HOUDINI TTS VOICE PRIORITIZATION
+            // ==========================================
+            function updateVoiceList() {
+                if (!window.speechSynthesis) return;
+                allSystemVoices = window.speechSynthesis.getVoices();
+                if (allSystemVoices.length === 0 || !dom.voiceSelect) return;
+               
+                let searchPrefix = activeLang === 'la' ? 'it' : (activeLang === 'nah' ? 'es' : activeLang);
+                let filteredVoices = allSystemVoices.filter(v => v.lang.startsWith(searchPrefix));
+               
+                dom.voiceSelect.innerHTML = '';
+                if (filteredVoices.length === 0) {
+                    dom.voiceSelect.innerHTML = '<option value="">Default System Voice</option>';
+                    return;
+                }
+                let selectedIndex = 0;
+                let primaryFound = false;
+                filteredVoices.forEach((voice, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = allSystemVoices.indexOf(voice);
+                    const cleanName = voice.name.replace(/Microsoft |Google /g, '');
+                    opt.textContent = `${cleanName} (${voice.lang})`;
+                   
+                    const vName = voice.name.toLowerCase();
+                    
+                    // ENGLISH VOICE PRIORITY FIX:
+                    // Primary 1: Microsoft Dave / David (US Male)
+                    // Primary 2: US Female (Zira, Jenny, Aria, US English Female)
+                    // Secondary Fallback: British English (Daniel, UK)
+                    if (activeLang === 'en' && !primaryFound) {
+                        if (vName.includes('dave') || vName.includes('david')) {
+                            selectedIndex = index;
+                            primaryFound = true;
+                        } else if (vName.includes('zira') || vName.includes('jenny') || vName.includes('aria') || (vName.includes('female') && vName.includes('us'))) {
+                            selectedIndex = index;
+                        } else if (!primaryFound && (vName.includes('daniel') || vName.includes('uk'))) {
+                            // Secondary fallback if no US primary found yet
+                            selectedIndex = index;
+                        }
+                    }
+                    dom.voiceSelect.appendChild(opt);
+                });
+               
+                dom.voiceSelect.selectedIndex = selectedIndex;
+            }
+            if (dom.langSelect) {
+                dom.langSelect.addEventListener('change', () => {
+                    activeLang = dom.langSelect.value;
+                    isLanguageLocked = true;
+                    if (dom.transcriptLine) dom.transcriptLine.innerText = `"Acoustic profile locked to ${activeLang.toUpperCase()}."`;
+                    updateVoiceList();
+                });
+            }
+            updateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = updateVoiceList;
+            }
+            // ==========================================
+            // CHUNKING ENGINE & TTS PROCESSOR
+            // ==========================================
+            function breakTextIntoChunks(text, max = 220) {
+                let cleanText = text.replace(/[*#]/g, '');
+                const sentences = cleanText.match(/[^.!?;\n]+[.!?;\n]+/g) || [cleanText];
+                let chunks = [], current = "";
+                for (let s of sentences) {
+                    if ((current + s).length > max) {
+                        if (current) chunks.push(current.trim());
+                        current = s;
+                    } else {
+                        current += " " + s;
+                    }
+                }
+                if (current) chunks.push(current.trim());
+                return chunks.filter(c => c.length > 2);
+            }
+            function createUtterance(text) {
+                const u = new SpeechSynthesisUtterance(text);
+                const voiceIndex = dom.voiceSelect ? dom.voiceSelect.value : "";
+               
+                if (allSystemVoices.length && voiceIndex !== "") {
+                    u.voice = allSystemVoices[voiceIndex];
+                }
+                u.lang = u.voice ? u.voice.lang : (activeLang === 'la' ? 'it-IT' : (activeLang === 'nah' ? 'es-MX' : activeLang));
+                u.rate = parseFloat(document.getElementById('rate').value || 0.96);
+                u.pitch = parseFloat(document.getElementById('pitch').value || 1.0);
+                u.volume = parseFloat(document.getElementById('volume').value || 1.0);
+                return u;
+            }
+            function updateUIState(state) {
+                ttsState = state;
+                if (state === 'playing') {
+                    dom.playIcon.innerText = "⏸";
+                    dom.playText.innerText = "Pause Sync";
+                    dom.statusDisplay.innerText = "TRANSMITTING";
+                    dom.statusDisplay.className = "text-[10px] font-bold text-teal-400 uppercase animate-pulse";
+                    runVisualizer(true);
+                } else if (state === 'paused') {
+                    dom.playIcon.innerText = "▶";
+                    dom.playText.innerText = "Resume Sync";
+                    dom.statusDisplay.innerText = "PAUSED";
+                    dom.statusDisplay.className = "text-[10px] font-bold text-amber-500 uppercase";
+                    runVisualizer(false);
+                } else if (state === 'thinking') {
+                    dom.statusDisplay.innerHTML = '<div class="thinking-spinner"></div> THINKING';
+                    dom.statusDisplay.className = "text-[10px] font-bold text-indigo-400 uppercase flex items-center";
+                } else {
+                    dom.playIcon.innerText = "▶";
+                    dom.playText.innerText = "Initialize";
+                    dom.statusDisplay.innerText = "IDLE";
+                    dom.statusDisplay.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest";
+                    runVisualizer(false);
+                }
+            }
+            function triggerAvatarLipSync(isSpeaking) {
+                const activeAvatar = document.querySelector('.skin-layer.active');
+                if (activeAvatar) {
+                    activeAvatar.classList.toggle('speaking', isSpeaking);
+                }
+            }
+            function processChunks() {
+                if (currentChunks.length === 0) {
+                    updateUIState('idle');
+                    triggerAvatarLipSync(false);
+                    return;
+                }
+               
+                const text = currentChunks.shift();
+                currentUtterance = createUtterance(text);
+               
+                currentUtterance.onstart = () => triggerAvatarLipSync(true);
+                currentUtterance.onpause = () => triggerAvatarLipSync(false);
+                currentUtterance.onresume = () => triggerAvatarLipSync(true);
+                currentUtterance.onend = () => {
+                    if (ttsState === 'playing') {
+                        processChunks();
+                    } else {
+                        triggerAvatarLipSync(false);
+                    }
+                };
+               
+                currentUtterance.onerror = (e) => {
+                    console.error("TTS Error:", e);
+                    updateUIState('idle');
+                    triggerAvatarLipSync(false);
+                };
+                speechSynthesis.speak(currentUtterance);
+            }
+            if (dom.playBtn) {
+                dom.playBtn.addEventListener('click', () => {
+                    if (ttsState === 'playing') {
+                        speechSynthesis.pause();
+                        updateUIState('paused');
+                        return;
+                    }
+                   
+                    if (ttsState === 'paused') {
+                        speechSynthesis.resume();
+                        updateUIState('playing');
+                        return;
+                    }
+                    const text = dom.ttsInput.value.trim();
+                    if (!text) return;
+                    speechSynthesis.cancel();
+                    currentChunks = breakTextIntoChunks(text);
+                    if(currentChunks.length === 0) return;
+                    updateUIState('playing');
+                    processChunks();
+                });
+            }
+            if (dom.stopBtn) {
+                dom.stopBtn.addEventListener('click', () => {
+                    speechSynthesis.cancel();
+                    updateUIState('idle');
+                    triggerAvatarLipSync(false);
+                });
+            }
+            // ==========================================
+            // LEXICON INJECTION & DISPATCH
+            // ==========================================
+            if (dom.lexiconInjectBtn && dom.lexiconSelect) {
+                dom.lexiconInjectBtn.addEventListener('click', () => {
+                    const selectedTerm = dom.lexiconSelect.value;
+                    if(selectedTerm) {
+                        dom.ttsInput.value = dom.ttsInput.value ? dom.ttsInput.value + "\n\n" + selectedTerm : selectedTerm;
+                        if (dom.transcriptLine) dom.transcriptLine.innerText = `"Lexicon term injected into acoustic buffer."`;
+                       
+                        dom.lexiconInjectBtn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                        dom.lexiconInjectBtn.innerText = "INJECTED ✓";
+                        setTimeout(() => {
+                            dom.lexiconInjectBtn.classList.replace('bg-emerald-600', 'bg-indigo-600');
+                            dom.lexiconInjectBtn.innerText = "Inject to Prompter";
+                        }, 1500);
+                    }
+                });
+            }
+            // Dynamic Offline Fallback Generator
             function generateDynamicOfflineResponse(prompt, mode) {
                 let subject = "your query";
                 if (window.nlp) {
@@ -626,15 +899,16 @@
                     if (nouns.length > 0) subject = nouns[0];
                 }
                 const responses = {
-                    "Short & Punchy": `System offline. Local analysis of "${subject}" confirms vault integrity.`,
-                    "Genius-Philosopher": `The network is silent, yet thought persists. Pondering "${subject}" through the lens of sovereign memory is an exercise in pure logic.`,
-                    "Comedic Roast": `No internet, and you're asking about "${subject}"? Bold. My local brain cells are working overtime for you.`,
-                    "cloud": `Offline Mode Active. The cloud is unreachable. I have synthesized a localized context regarding "${subject}".`
+                    "Short & Punchy": `Local Sovereign Engine: Evaluated "${subject}". All parameters valid.`,
+                    "Genius-Philosopher": `Pondering "${subject}" through sovereign logic reveals an interconnected structure of local thought.`,
+                    "Comedic Roast": `Offline mode active. Asking about "${subject}"? My local logic core is on it!`,
+                    "cloud": `Offline Failsafe: Synthesized local context for "${subject}".`
                 };
                 return responses[mode] || responses.cloud;
             }
-
-            // GENERATE BTN: REBUILT WITH OFFLINE-FIRST FAILSAFE
+            // ==========================================
+            // GENERATE BTN: DECOUPLED CLOUD / OFFLINE FIRST
+            // ==========================================
             if (dom.generateAiBtn) {
                 dom.generateAiBtn.addEventListener('click', async () => {
                     const prompt = dom.aiPromptInput.value.trim();
@@ -642,70 +916,76 @@
                     
                     dom.generateAiBtn.disabled = true;
                     runVisualizer(true);
-                    const activeMode = dom.modeSelect.value;
-
+                    const activeMode = dom.modeSelect ? dom.modeSelect.value : "cloud";
+                    // 1. TIER 1 LOCAL NEURO-SYMBOLIC ROUTER CHECK
                     const offlineResponse = processTier1Offline(prompt);
                     if (offlineResponse) {
                         dom.ttsInput.value = offlineResponse;
-                        dom.transcriptLine.innerText = `"Local Vault match found. Routing to TTS."`;
+                        if (dom.transcriptLine) dom.transcriptLine.innerText = `"Local Sovereign Vault match found. Routing to TTS."`;
                         antiGravityLanguageDetect(offlineResponse);
                         dom.generateAiBtn.disabled = false;
                         runVisualizer(false);
-                        dom.playBtn.click();
+                        setTimeout(() => dom.playBtn.click(), 200);
                         return;
                     }
-
+                    // 2. OFFLINE OR MANUAL LOCAL MODE
                     if (!navigator.onLine || activeMode !== "cloud") {
                         const localResponse = generateDynamicOfflineResponse(prompt, activeMode);
                         dom.ttsInput.value = localResponse;
-                        dom.transcriptLine.innerText = `"Offline. Bypassing cloud, engaging neuro-symbolic engine."`;
+                        if (dom.transcriptLine) dom.transcriptLine.innerText = `"Offline compute engaged. Bypassing cloud API."`;
                         dom.generateAiBtn.disabled = false;
                         runVisualizer(false);
-                        dom.playBtn.click();
+                        setTimeout(() => dom.playBtn.click(), 200);
                         return;
                     }
-
+                    // 3. CLOUD API CALL WITH TIMEOUT FAILSAFE
+                    if (dom.transcriptLine) dom.transcriptLine.innerText = `"Consulting Cognitive Core..."`;
                     updateUIState('thinking');
                     try {
                         const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 8000); 
-
+                        const timeoutId = setTimeout(() => controller.abort(), 6000);
                         const response = await fetch('/api/gemini', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prompt, mode: activeMode, model: JAI_CONFIG.MODEL }),
+                            body: JSON.stringify({
+                                prompt: prompt,
+                                mode: activeMode,
+                                model: JAI_CONFIG.MODEL,
+                                imageBase64: currentOcularBase64
+                            }),
                             signal: controller.signal
                         });
                         clearTimeout(timeoutId);
                         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                         const data = await response.json();
-                        
-                        dom.ttsInput.value = data.text;
-                        antiGravityLanguageDetect(data.text);
-                        dom.transcriptLine.innerText = `"Cloud payload secured. Initializing acoustic stream."`;
-                        updateUIState('idle'); 
-                        fireHapticHandshake('MEDIUM');
-                        dom.playBtn.click();
+                        if (data.text) {
+                            dom.ttsInput.value = data.text;
+                            antiGravityLanguageDetect(data.text);
+                            if (dom.transcriptLine) dom.transcriptLine.innerText = `"Cloud response secured. Synthesizing voice."`;
+                            updateUIState('idle');
+                            setTimeout(() => dom.playBtn.click(), 200);
+                        }
                     } catch (error) {
-                        console.warn("API Offline/Blocked. Synthesizing dynamic offline response.", error);
-                        const localResponse = generateDynamicOfflineResponse(prompt, "cloud");
-                        dom.ttsInput.value = localResponse;
-                        dom.transcriptLine.innerText = `"Cloud link severed. Synthesizing fallback."`;
+                        console.warn("Cloud API unreachable or throttled. Routing to local synthesis.", error);
+                        const fallbackMsg = generateDynamicOfflineResponse(prompt, "cloud");
+                        dom.ttsInput.value = fallbackMsg;
+                        if (dom.transcriptLine) dom.transcriptLine.innerText = `"Cloud link offline. Synthesizing local response."`;
                         updateUIState('idle');
-                        dom.playBtn.click();
+                        setTimeout(() => dom.playBtn.click(), 200);
                     } finally {
                         dom.generateAiBtn.disabled = false;
                         runVisualizer(false);
                     }
                 });
             }
-
-            // OCULAR NERVE EVENT LISTENER (NEW)
-            dom.ocularNerveBtn.addEventListener('click', initOcularNerve);
-            
-            // ... All other functions and event listeners (runVisualizer, TTS engine, etc.) are assumed here, using the `dom.` prefix for elements.
-            // For brevity, the full, unchanged logic for TTS chunking, voice list updates, etc. is omitted but should be ported into this refactored structure.
-            // The logic from the previous answer can be dropped in here, replacing old element lookups with the `dom.` object properties.
+            // Slider values
+            ['rate','pitch','volume'].forEach(id => {
+                const slider = document.getElementById(id);
+                const val = document.getElementById(id + '-val');
+                if (slider && val) {
+                    slider.addEventListener('input', () => val.textContent = parseFloat(slider.value).toFixed(2));
+                }
+            });
         });
     </script>
 </body>
