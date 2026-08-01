@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UT8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jai | OmniStack Digital Assistant (Smile App v3.0)</title>
     
@@ -654,42 +654,7 @@
             window.addEventListener('offline', updateNetworkBadge);
             updateNetworkBadge();
 
-            // ==========================================
-            // TASK 2: TETRA GENESIS GESTURE CONTROLS
-            // ==========================================
-            let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
-            const gestureTarget = dom.avatarCard || dom.tetraGamingArea;
-
-            if (gestureTarget) {
-                gestureTarget.addEventListener('touchstart', (e) => {
-                    touchStartX = e.changedTouches[0].screenX;
-                    touchStartY = e.changedTouches[0].screenY;
-                }, { passive: true });
-
-                gestureTarget.addEventListener('touchend', (e) => {
-                    touchEndX = e.changedTouches[0].screenX;
-                    touchEndY = e.changedTouches[0].screenY;
-                    handleTetraGesture();
-                }, { passive: true });
-            }
-
-            function handleTetraGesture() {
-                const diffX = touchEndX - touchStartX;
-                const diffY = touchEndY - touchStartY;
-                const threshold = 40;
-
-                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-                    if (diffX > 0) {
-                        if (dom.transcriptLine) dom.transcriptLine.innerText = `"Tetra Genesis Gesture: Manipulating shape (Drag Right -> Horizontal Shift)."`;
-                    } else {
-                        if (dom.transcriptLine) dom.transcriptLine.innerText = `"Tetra Genesis Gesture: Manipulating shape (Drag Left -> Horizontal Shift)."`;
-                    }
-                } else if (Math.abs(diffY) > threshold && diffY < 0) {
-                    if (dom.transcriptLine) dom.transcriptLine.innerText = `"Tetra Genesis Gesture: Swipe Up / Orientation Change Executed."`;
-                } else if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
-                    if (dom.transcriptLine) dom.transcriptLine.innerText = `"Tetra Genesis Touch: Shape Rotation Triggered."`;
-                }
-            }
+            
 
             // ==========================================
             // OCULAR NERVE CAMERA BASE64 CAPTURE ENGINE
@@ -1053,8 +1018,8 @@
             // ==========================================
             // GENERATE BTN: FULL 4-TIER RESOLUTION CHAIN
             // ==========================================
-            if (dom.generateAiBtn) {
-                dom.generateAiBtn.addEventListener('click', async () => {
+            if (dom.genereAiBtn) {
+                dom.generateAiBtn.addentListener('click', async () => {
                     const prompt = dom.aiPromptInput.value.trim();
                     if (!prompt) return;
                     
@@ -1136,7 +1101,7 @@
                         dom.ttsInput.value = fallbackMsg;
                         if (dom.transcriptLine) dom.transcriptLine.innerText = `"Cloud link offline (500/timeout). Synthesizing local fallback."`;
                         updateUIState('idle');
-                        setTimeout(() => dom.playBtn.click(), 200);
+                        setTmeout(() => dom.playBtn.lick(), 200);
                     } finally {
                         dom.generateAiBtn.disabled = false;
                         runVisualizer(false);
