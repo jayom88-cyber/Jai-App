@@ -6,7 +6,7 @@
     <title>Jai | OmniStack Digital Assistant (Smile App v3.0)</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./Gemini_Generated_Image_ (19).png" type="image/png">
     
     <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
@@ -289,7 +289,7 @@
                 <div id="avatar-gesture-card" class="avatar-lens" role="region" aria-label="AI Avatar Display & Tetra Genesis Touch Zone">
                     <!-- OPTION 1: Core Engine J-Mandala (MANDATORY DEFAULT ACTIVE) -->
                     <div id="skin-neutral" class="skin-layer active">
-                        <img src="./Jai- Ai 2026 Hero Image Femal.png" alt="Jai Core J-Mandala Logo" onerror="this.src='./femal_gravatar_open.png'">
+                        <img src="./Gemini_Generated_Image_ (19).png" alt="Jai Core J-Mandala Logo">
                     </div>
                     
                     <div id="skin-real" class="skin-layer">
@@ -660,6 +660,17 @@
 
             if (dom.langSelect) dom.langSelect.value = activeLang;
 
+            function runSystemDiagnostics() {
+                console.log("=== OMNISTACK TIER 1 DIAGNOSTICS ===");
+                console.log("Math.js Engine:", typeof math !== 'undefined' ? "ONLINE ✓" : "OFFLINE ✗");
+                console.log("Compromise NLP:", typeof window.nlp !== 'undefined' ? "ONLINE ✓" : "OFFLINE ✗");
+                console.log("Tesseract OCR:", typeof Tesseract !== 'undefined' ? "ONLINE ✓" : "OFFLINE ✗");
+                console.log("Face-API Biometrics:", typeof faceapi !== 'undefined' ? "ONLINE ✓" : "OFFLINE ✗");
+                console.log("Local History Vault:", typeof JAI_HISTORY_VAULT !== 'undefined' ? `ONLINE ✓ (${JAI_HISTORY_VAULT.length} entries)` : "OFFLINE ✗");
+                console.log("====================================");
+            }
+            runSystemDiagnostics();
+
             const updateNetworkBadge = () => {
                 if (navigator.onLine) {
                     if (dom.statusDot) dom.statusDot.style.backgroundColor = '#10b981';
@@ -702,6 +713,8 @@
                         if (dom.aiPromptInput && !dom.aiPromptInput.value) {
                             dom.aiPromptInput.value = "[Visual Base64 Feed Attached] Analyze this frame.";
                         }
+                        // AUTONOMOUS PAYLOAD DISPATCH: Auto-click Generate button after capture
+                        setTimeout(() => dom.generateAiBtn.click(), 500);
                     }, 300);
                 } catch (err) {
                     console.error("Ocular Camera Error:", err);
