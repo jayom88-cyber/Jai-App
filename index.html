@@ -23,6 +23,12 @@
     <!-- JAI OFFLINE HISTORY VAULT -->
     <script src="./jai_history.js"></script>
 
+    <!-- TESSERACT.JS (OPTICAL CHARACTER RECOGNITION) -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+    <!-- FACE-API.JS (BIOMETRIC MOOD ALIGNMENT) -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
     <style>
         /* =========================================================================
            CORE SYSTEM ARCHITECTURE & COSMIC DEEP SPACE DESIGN TOKENS
@@ -435,7 +441,25 @@
                 <button onclick="SystemApp.toggleSkin('pixar')" id="skin-btn-pixar" class="btn-pill">J Pixars</button>
                 <button onclick="SystemApp.toggleSkin('female')" id="skin-btn-female" class="btn-pill">Female Synth</button>
             </div>
+            
+            <!-- UPGRADED ACTION CLUSTER -->
             <div class="action-cluster flex justify-center w-full md:w-auto gap-4">
+                
+                <!-- OCR SCANNER BUTTON -->
+                <button id="ocr-scan-btn" class="btn-action-square shadow-[0_0_15px_rgba(59,130,246,0.2)] active:scale-95 transition-transform" title="Extract Text (OCR)" style="color: #3b82f6; border-color: rgba(59,130,246, 0.4);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </button>
+
+                <!-- BIOMETRIC MOOD SCANNER BUTTON -->
+                <button id="mood-scan-btn" class="btn-action-square shadow-[0_0_15px_rgba(236,72,153,0.2)] active:scale-95 transition-transform" title="Biometric Mood Scan" style="color: #ec4899; border-color: rgba(236,72,153, 0.4);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+
+                <!-- EXISTING OCULAR NERVE BUTTON -->
                 <button id="ocular-nerve-btn" class="btn-action-square shadow-[0_0_15px_rgba(20,184,166,0.2)] active:scale-95 transition-transform" title="Activate Ocular Nerve (Base64 Camera)" style="color: #14b8a6; border-color: rgba(20, 184, 166, 0.4);">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
@@ -500,17 +524,29 @@
             .catch(err => console.warn("Dictionary load notice:", err));
 
         // ==========================================
+        // INITIALIZE BIOMETRIC MODELS (FACE-API)
+        // ==========================================
+        async function initBiometrics() {
+            // Using standard public CDN weights for face-api
+            const modelUrl = 'https://justadudewhohacks.github.io/face-api.js/models';
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl);
+                await faceapi.nets.faceExpressionNet.loadFromUri(modelUrl);
+                console.log("Biometric models loaded successfully.");
+            } catch (e) { 
+                console.warn("Biometrics models pending...", e); 
+            }
+        }
+        initBiometrics();
+
+        // ==========================================
         // TASK 2: 4-TIER HYBRID LOOKUP & FAULT-TOLERANT ROUTER
         // ==========================================
         async function resolveDictionaryQuery(word) {
             const cleanWord = word.toLowerCase().trim();
-
-            // Step 1: Check Local Vault (Instant RAM lookup)
             if (typeof LOCAL_DICTIONARY !== 'undefined' && LOCAL_DICTIONARY[cleanWord]) {
                 return `American Standard English Vault: "${cleanWord}" is defined as: ${LOCAL_DICTIONARY[cleanWord]}`;
             }
-
-            // Step 1B: Partial match check in Local Vault
             if (typeof LOCAL_DICTIONARY !== 'undefined') {
                 for (const dictKey in LOCAL_DICTIONARY) {
                     if (dictKey === cleanWord || cleanWord.includes(dictKey)) {
@@ -518,8 +554,6 @@
                     }
                 }
             }
-
-            // Step 2: Online Fallback to Public Dictionary API
             if (navigator.onLine) {
                 try {
                     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
@@ -534,23 +568,17 @@
                     console.warn("Public Dictionary API lookup failed. Falling back to NLP.", e);
                 }
             }
-
-            // Step 3: Offline NLP Root Analysis via Compromise.js
             if (window.nlp) {
                 const doc = window.nlp(cleanWord);
                 const root = doc.verbs().toInfinitive().text() || doc.nouns().toSingular().text() || cleanWord;
                 return `Local analysis of "${cleanWord}" (root word: "${root}"). Sovereign vault active.`;
             }
-
             return `Definition for "${cleanWord}" is currently unmapped in the offline vault.`;
         }
 
-        // Tier 1 Neuro-Symbolic Router
         function processTier1Offline(prompt) {
             const cleanPrompt = prompt.trim();
             const p = cleanPrompt.toLowerCase();
-
-            // 1. Math.js Calculator Engine
             if (typeof math !== 'undefined' && (/[\d+\-*/^()=]/.test(cleanPrompt) || p.startsWith('calculate') || p.startsWith('math') || p.includes('what is'))) {
                 try {
                     let expr = cleanPrompt.replace(/what is|calculate|math|\?/gi, '').trim();
@@ -558,12 +586,8 @@
                         const result = math.evaluate(expr);
                         return `Neuro-Symbolic Math Engine: ${expr} = ${result}`;
                     }
-                } catch (e) {
-                    // Continue routing
-                }
+                } catch (e) {}
             }
-
-            // 2. Pan-American History Vault Search (3000 BCE to Present)
             if (typeof JAI_HISTORY_VAULT !== 'undefined') {
                 for (const entry of JAI_HISTORY_VAULT) {
                     const subLower = entry.subject.toLowerCase();
@@ -572,21 +596,15 @@
                     }
                 }
             }
-
-            // 3. System Identity Router
             if (p.includes('who are you') || p.includes('your name')) {
                 return "I am Jai, an OmniStack Digital Assistant and thought-partner, running on a local neuro-symbolic architecture with speech chunking.";
             }
             if (p.includes('creator') || p.includes('who made you')) {
                 return "I was created by Lead Engineer Jairo (Jay) Bonilla of the JAI-VERSE.";
             }
-
             return null;
         }
 
-        // ==========================================
-        // HARDWARE & PERMISSIONS HANDSHAKE
-        // ==========================================
         async function initHardwareSandbox() {
             try {
                 if ('speechSynthesis' in window) {
@@ -632,6 +650,8 @@
                 statusDot: document.getElementById('status-dot'),
                 statusText: document.getElementById('status-text'),
                 ocularNerveBtn: document.getElementById('ocular-nerve-btn'),
+                ocrScanBtn: document.getElementById('ocr-scan-btn'),
+                moodScanBtn: document.getElementById('mood-scan-btn'),
                 ocularVideo: document.getElementById('ocular-video-element'),
                 ocularCanvas: document.getElementById('ocular-canvas-element'),
                 tetraGamingArea: document.getElementById('tetra-gaming-area'),
@@ -640,7 +660,6 @@
 
             if (dom.langSelect) dom.langSelect.value = activeLang;
 
-            // NETWORK MONITOR BADGE
             const updateNetworkBadge = () => {
                 if (navigator.onLine) {
                     if (dom.statusDot) dom.statusDot.style.backgroundColor = '#10b981';
@@ -653,8 +672,6 @@
             window.addEventListener('online', updateNetworkBadge);
             window.addEventListener('offline', updateNetworkBadge);
             updateNetworkBadge();
-
-            
 
             // ==========================================
             // OCULAR NERVE CAMERA BASE64 CAPTURE ENGINE
@@ -697,7 +714,86 @@
             }
 
             // ==========================================
-            // WAVEFORM VISUALIZER & LIP SYNC
+            // OCR SCANNER (TESSERACT.JS)
+            // ==========================================
+            async function triggerOCRScan() {
+                if (!dom.transcriptLine) return;
+                dom.transcriptLine.innerText = `"Activating OCR Scanner. Please hold document to camera..."`;
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                    dom.ocularVideo.srcObject = stream;
+                    await dom.ocularVideo.play();
+
+                    setTimeout(async () => {
+                        const ctx = dom.ocularCanvas.getContext('2d');
+                        dom.ocularCanvas.width = dom.ocularVideo.videoWidth;
+                        dom.ocularCanvas.height = dom.ocularVideo.videoHeight;
+                        ctx.drawImage(dom.ocularVideo, 0, 0);
+                        stream.getTracks().forEach(track => track.stop());
+
+                        dom.transcriptLine.innerText = `"Extracting text via local OCR..."`;
+                        const result = await Tesseract.recognize(dom.ocularCanvas, 'eng');
+                        
+                        if (result.data.text.trim()) {
+                            dom.aiPromptInput.value = result.data.text.trim();
+                            dom.transcriptLine.innerText = `"Text successfully extracted and injected."`;
+                        } else {
+                            dom.transcriptLine.innerText = `"No text detected in frame."`;
+                        }
+                    }, 800);
+                } catch (err) {
+                    console.error(err);
+                    dom.transcriptLine.innerText = `"Camera feed unavailable."`;
+                }
+            }
+
+            if (dom.ocrScanBtn) {
+                dom.ocrScanBtn.addEventListener('click', triggerOCRScan);
+            }
+
+            // ==========================================
+            // BIOMETRIC MOOD SCANNER (FACE-API.JS)
+            // ==========================================
+            async function triggerBiometricScan() {
+                if (!dom.transcriptLine) return;
+                dom.transcriptLine.innerText = `"Scanning biometric telemetry..."`;
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                    dom.ocularVideo.srcObject = stream;
+                    await dom.ocularVideo.play();
+
+                    setTimeout(async () => {
+                        const detection = await faceapi.detectSingleFace(dom.ocularVideo, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+                        stream.getTracks().forEach(track => track.stop());
+
+                        if (detection) {
+                            const expressions = detection.expressions;
+                            const dominantMood = Object.keys(expressions).reduce((a, b) => expressions[a] > expressions[b] ? a : b);
+
+                            dom.transcriptLine.innerText = `"Biometric scan complete. Mood detected: ${dominantMood.toUpperCase()}"`;
+
+                            // Adjust operation mode based on expression
+                            if (['happy', 'surprised'].includes(dominantMood)) {
+                                dom.modeSelect.value = "Short & Punchy";
+                            } else {
+                                dom.modeSelect.value = "Genius-Philosopher";
+                            }
+                        } else {
+                            dom.transcriptLine.innerText = `"No face detected. Retaining current mode."`;
+                        }
+                    }, 800);
+                } catch (err) {
+                    console.error(err);
+                    dom.transcriptLine.innerText = `"Camera feed unavailable."`;
+                }
+            }
+
+            if (dom.moodScanBtn) {
+                dom.moodScanBtn.addEventListener('click', triggerBiometricScan);
+            }
+
+            // ==========================================
+            // UPGRADED WAVY EQ VISUALIZER
             // ==========================================
             const runVisualizer = (isSpeaking) => {
                 const bars = document.querySelectorAll('.eq-bar');
@@ -710,10 +806,15 @@
                     return;
                 }
 
+                // The Bell Curve Array: Outer edges barely move, Center pulses heavily
+                const waveWeights = [0.15, 0.3, 0.6, 0.9, 1.3, 1.6, 1.6, 1.3, 0.9, 0.6, 0.3, 0.15];
+
                 function renderFrame() {
                     const simulatedVolume = Math.random();
-                    bars.forEach(bar => {
-                        const magnitude = (Math.random() * 1.5) + (simulatedVolume * 1.2) + 1;
+                    
+                    bars.forEach((bar, index) => {
+                        const weight = waveWeights[index] || 1;
+                        const magnitude = ((Math.random() * 0.8) * weight) + (simulatedVolume * weight) + 1;
                         bar.style.transform = `scaleY(${magnitude})`;
                     });
 
@@ -795,9 +896,6 @@
                 });
             }
 
-            // ==========================================
-            // DIGITAL HOUDINI TTS VOICE PRIORITIZATION
-            // ==========================================
             function updateVoiceList() {
                 if (!window.speechSynthesis) return;
                 allSystemVoices = window.speechSynthesis.getVoices();
@@ -852,9 +950,6 @@
                 speechSynthesis.onvoiceschanged = updateVoiceList;
             }
 
-            // ==========================================
-            // CHUNKING ENGINE & TTS PROCESSOR
-            // ==========================================
             function breakTextIntoChunks(text, max = 220) {
                 let cleanText = text.replace(/[*#]/g, '');
                 const sentences = cleanText.match(/[^.!?;\n]+[.!?;\n]+/g) || [cleanText];
@@ -918,10 +1013,25 @@
                 }
             }
 
+            // ==========================================
+            // UPGRADED CHUNKING ENGINE (EVENT LOOP BRIDGE)
+            // ==========================================
             function processChunks() {
                 if (currentChunks.length === 0) {
                     updateUIState('idle');
                     triggerAvatarLipSync(false);
+                    
+                    // ==========================================
+                    // THE EVENT LOOP BRIDGE (Subsystem #8)
+                    // Auto-handoff back to the STT microphone
+                    // ==========================================
+                    setTimeout(() => {
+                        if (!isRecording && (window.SpeechRecognition || window.webkitSpeechRecognition) && dom.micBtn) {
+                            console.log("Autonomy Engine: Re-opening audio channel...");
+                            dom.micBtn.click(); 
+                        }
+                    }, 800);
+                    
                     return;
                 }
                
@@ -979,9 +1089,6 @@
                 });
             }
 
-            // ==========================================
-            // LEXICON INJECTION & DISPATCH
-            // ==========================================
             if (dom.lexiconInjectBtn && dom.lexiconSelect) {
                 dom.lexiconInjectBtn.addEventListener('click', () => {
                     const selectedTerm = dom.lexiconSelect.value;
@@ -999,7 +1106,6 @@
                 });
             }
 
-            // Dynamic Offline Fallback Generator
             function generateDynamicOfflineResponse(prompt, mode) {
                 let subject = "your query";
                 if (window.nlp) {
@@ -1015,11 +1121,8 @@
                 return responses[mode] || responses.cloud;
             }
 
-            // ==========================================
-            // GENERATE BTN: FULL 4-TIER RESOLUTION CHAIN
-            // ==========================================
-            if (dom.genereAiBtn) {
-                dom.generateAiBtn.addentListener('click', async () => {
+            if (dom.generateAiBtn) {
+                dom.generateAiBtn.addEventListener('click', async () => {
                     const prompt = dom.aiPromptInput.value.trim();
                     if (!prompt) return;
                     
@@ -1027,7 +1130,6 @@
                     runVisualizer(true);
                     const activeMode = dom.modeSelect ? dom.modeSelect.value : "cloud";
 
-                    // Check for Dictionary / Definition Intent First
                     const defMatch = prompt.toLowerCase().match(/(?:define|definition of|what does|meaning of|jai lexicon)\s+([a-z\s-]+)/i);
                     if (defMatch && defMatch[1]) {
                         const wordToLookup = defMatch[1].trim();
@@ -1041,7 +1143,6 @@
                         return;
                     }
 
-                    // 1. TIER 1 LOCAL NEURO-SYMBOLIC ROUTER CHECK
                     const offlineResponse = processTier1Offline(prompt);
                     if (offlineResponse) {
                         dom.ttsInput.value = offlineResponse;
@@ -1053,7 +1154,6 @@
                         return;
                     }
 
-                    // 2. OFFLINE OR MANUAL LOCAL MODE
                     if (!navigator.onLine || activeMode !== "cloud") {
                         const localResponse = generateDynamicOfflineResponse(prompt, activeMode);
                         dom.ttsInput.value = localResponse;
@@ -1064,7 +1164,6 @@
                         return;
                     }
 
-                    // 3. CLOUD API CALL WITH 8s TIMEOUT FAILSAFE
                     if (dom.transcriptLine) dom.transcriptLine.innerText = `"Consulting Cognitive Core..."`;
                     updateUIState('thinking');
 
@@ -1101,7 +1200,7 @@
                         dom.ttsInput.value = fallbackMsg;
                         if (dom.transcriptLine) dom.transcriptLine.innerText = `"Cloud link offline (500/timeout). Synthesizing local fallback."`;
                         updateUIState('idle');
-                        setTmeout(() => dom.playBtn.lick(), 200);
+                        setTimeout(() => dom.playBtn.click(), 200);
                     } finally {
                         dom.generateAiBtn.disabled = false;
                         runVisualizer(false);
@@ -1109,7 +1208,6 @@
                 });
             }
 
-            // Slider controls
             ['rate','pitch','volume'].forEach(id => {
                 const slider = document.getElementById(id);
                 const val = document.getElementById(id + '-val');
