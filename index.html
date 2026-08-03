@@ -11,6 +11,8 @@
     <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
     
+    <!-- Tier 2 Offline Fallback Library -->
+    <script src="https://unpkg.com/compromise"></script>
     <!-- JAI OFFLINE BASE64 ASSET VECTORS -->
     <script src="./jai_assets.js"></script>
 
@@ -663,38 +665,65 @@
         // ==========================================
         // TASK 2: 4-TIER HYBRID LOOKUP & FAULT-TOLERANT ROUTER
         // ==========================================
+        // =====================================================================
+        // STRICT 3-TIER HYBRID ROUTING ORDER (SYSTEM DISPATCH SPARK v3.0)
+        // Tier 1: Local Vault (Instant RAM Lookup)
+        // Tier 2: Offline NLP (Compromise.js Root Analysis when offline)
+        // Tier 3: Cloud API (Public Dictionary API Fallback when online)
+        // =====================================================================
         async function resolveDictionaryQuery(word) {
             const cleanWord = word.toLowerCase().trim();
+            if (!cleanWord) return "Please enter a valid word.";
+
+            // 1. TIER 1 (LOCAL VAULT): Instant RAM Lookup
+            const dictSource = (typeof window.localDictionary !== 'undefined') ? window.localDictionary : (typeof LOCAL_DICTIONARY !== 'undefined' ? LOCAL_DICTIONARY : {});
+            if (dictSource[cleanWord]) {
+                console.log(`[OmniStack] Tier 1 Match: "${cleanWord}" in Local Vault.`);
+                return `Tier 1: Local Vault — "${cleanWord}": ${dictSource[cleanWord]}`;
+            }
             if (typeof LOCAL_DICTIONARY !== 'undefined' && LOCAL_DICTIONARY[cleanWord]) {
-                return `American Standard English Vault: "${cleanWord}" is defined as: ${LOCAL_DICTIONARY[cleanWord]}`;
+                console.log(`[OmniStack] Tier 1 Match in LOCAL_DICTIONARY.`);
+                return `Tier 1: Local Vault — "${cleanWord}": ${LOCAL_DICTIONARY[cleanWord]}`;
             }
-            if (typeof LOCAL_DICTIONARY !== 'undefined') {
-                for (const dictKey in LOCAL_DICTIONARY) {
-                    if (dictKey === cleanWord || cleanWord.includes(dictKey)) {
-                        return `Sovereign Vault Entry: "${dictKey}" — ${LOCAL_DICTIONARY[dictKey]}`;
-                    }
+            for (const dictKey in dictSource) {
+                if (dictKey === cleanWord || cleanWord.includes(dictKey)) {
+                    return `Tier 1: Local Vault — "${dictKey}": ${dictSource[dictKey]}`;
                 }
             }
-            if (navigator.onLine) {
-                try {
-                    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        const definition = data[0]?.meanings[0]?.definitions[0]?.definition;
-                        if (definition) {
-                            return `Public Dictionary API: "${cleanWord}" is defined as: ${definition}`;
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Public Dictionary API lookup failed. Falling back to NLP.", e);
+
+            // 2. TIER 2 (OFFLINE NLP FALLBACK): Compromise.js Word-Root Analysis when offline
+            if (!navigator.onLine) {
+                console.warn(`[OmniStack] Offline mode active. Tier 2 compromise.js fallback for: ${cleanWord}`);
+                if (typeof window.nlp !== 'undefined') {
+                    let doc = window.nlp(cleanWord);
+                    let root = doc.verbs().out('array')[0] || doc.nouns().out('array')[0] || cleanWord;
+                    return `Tier 2: Offline NLP Analysis — The term '${cleanWord}' is unmapped in the local vault, but appears structurally related to '${root}'.`;
+                } else {
+                    return `Tier 2: System Offline — Definition for '${cleanWord}' not found in local vault.`;
                 }
             }
-            if (window.nlp) {
-                const doc = window.nlp(cleanWord);
-                const root = doc.verbs().toInfinitive().text() || doc.nouns().toSingular().text() || cleanWord;
-                return `Local analysis of "${cleanWord}" (root word: "${root}"). Sovereign vault active.`;
+
+            // 3. TIER 3 (CLOUD API): Public External Dictionary API Fallback when online
+            try {
+                console.log(`[OmniStack] Tier 3: Fetching '${cleanWord}' from External Dictionary API...`);
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const definition = data[0]?.meanings[0]?.definitions[0]?.definition;
+                    if (definition) {
+                        return `Tier 3: Cloud API — "${cleanWord}": ${definition}`;
+                    }
+                }
+                throw new Error(`Status ${response.status}`);
+            } catch (error) {
+                console.error("[OmniStack] Tier 3 API Fallback Error:", error);
+                if (typeof window.nlp !== 'undefined') {
+                    let doc = window.nlp(cleanWord);
+                    let root = doc.verbs().out('array')[0] || doc.nouns().out('array')[0] || cleanWord;
+                    return `Tier 2 NLP Fallback — Root analysis for '${cleanWord}': '${root}'.`;
+                }
+                return `Definition for '${cleanWord}' not found in local or cloud databases.`;
             }
-            return `Definition for "${cleanWord}" is currently unmapped in the offline vault.`;
         }
 
         function processTier1Offline(prompt) {
