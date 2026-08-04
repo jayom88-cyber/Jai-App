@@ -841,21 +841,21 @@
             function bindOfflineBase64Assets() {
                 if (window.JAI_ASSETS) {
                     try {
-                        const neutralImg = document.querySelector('#skin-neutral img');
-                        const realImg = document.querySelector('#skin-real img');
-                        const pixarImg = document.querySelector('#skin-pixar img');
-                        const pixarMouthImg = document.querySelector('#pixar-mouth-open img');
-                        const femaleImg = document.querySelector('#skin-female img');
-                        const femaleMouthImg = document.querySelector('#female-mouth-open img');
-
-                        if (neutralImg && window.JAI_ASSETS.mandala) neutralImg.src = window.JAI_ASSETS.mandala;
-                        if (realImg && window.JAI_ASSETS.rio) realImg.src = window.JAI_ASSETS.rio;
-                        if (pixarImg && window.JAI_ASSETS.pixars) pixarImg.src = window.JAI_ASSETS.pixars;
-                        if (pixarMouthImg && window.JAI_ASSETS.pixars) pixarMouthImg.src = window.JAI_ASSETS.pixars;
-                        if (femaleImg && window.JAI_ASSETS.female) femaleImg.src = window.JAI_ASSETS.female;
-                        if (femaleMouthImg && window.JAI_ASSETS.femaleOpen) femaleMouthImg.src = window.JAI_ASSETS.femaleOpen;
-                        
-                        console.log("Base64 Asset Vectors bound to avatar DOM elements.");
+                        const map = {
+                            '#skin-neutral img': 'JAI_MANDALA_BASE64',
+                            '#skin-real img': 'JAI_RIO_BASE64',
+                            '#skin-pixar img': 'JAI_PIXARS_BASE64',
+                            '#pixar-mouth-open img': 'JAI_PIXARS_BASE64',
+                            '#skin-female img': 'JAI_FEMALE_BASE64',
+                            '#female-mouth-open img': 'JAI_FEMALE_OPEN_BASE64'
+                        };
+                        for (const sel in map) {
+                            const el = document.querySelector(sel);
+                            const key = map[sel];
+                            const val = window.JAI_ASSETS[key] || window.JAI_ASSETS[key.replace('JAI_', '').replace('_BASE64', '').toLowerCase()];
+                            if (el && val) el.src = val;
+                        }
+                        console.log("Base64 Asset Vectors bound to all 4 gravatar DOM elements.");
                     } catch(e) { console.warn("Asset binding notice:", e); }
                 }
             }
