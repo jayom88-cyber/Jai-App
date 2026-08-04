@@ -1,9 +1,0 @@
-﻿Subsystem,**Status,Evidence**
-Text Processing,Implemented,"breakTextIntoChunks(text, max) — sentence-aware chunking."
-Speech Synthesis,Implemented,"JaiVerseVoiceEngine using SpeechSynthesisUtterance, voice selection, onend/onerror."
-Audio Output,Implemented,speechSynthesis.speak() and speechSynthesis.cancel() used in processChunks() and initHardwareSandbox().
-Display Telemetry,Implemented,"updateUIState(state), triggerAvatarLipSync(isSpeaking), DOM bindings (#tts-status, .skin-layer, .transcript-deck)."
-Orchestration,Partial,currentChunks + processChunks() implement FIFO sequencing but lack centralized control methods and interruption policies.
-State Machine,Partial / Missing,ttsState exists and is used by UI but there is no formal enum or guarded transition logic for listening vs speaking.
-Event Loop Scheduler,Missing,"No per-chunk timeouts, watchdogs, or worker-based scheduler to recover from stuck utterances."
-Microphone STT,Missing,No getUserMedia({audio: true}) or SpeechRecognition pipeline present.
