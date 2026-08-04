@@ -11,12 +11,19 @@
     <!-- Compiled Tailwind CSS local build reference -->
     <link href="./output.css" rel="stylesheet">
     
-    <!-- Tier 2 Offline Fallback Library -->
-    <script src="https://unpkg.com/compromise"></script>
+    <!-- Compiled Tailwind CSS local build reference -->
+    <link href="./output.css" rel="stylesheet">
+    
+    <!-- TIER 1 NEURO-SYMBOLIC ENGINE: Local Math.js -->
+    <script src="./math.js"></script>
+
+    <!-- TIER 2 OFFLINE NLP ENGINE: Local Compromise.js -->
+    <script src="./compromise.js"></script>
+
     <!-- JAI OFFLINE BASE64 ASSET VECTORS -->
     <script src="./jai_assets.js"></script>
 
-    <!-- JAI OFFLINE HISTORY VAULT -->
+    <!-- TIER 1 LOCAL HISTORY VAULT -->
     <script src="./jai_history.js"></script>
 
     <style>
@@ -671,6 +678,32 @@
         // Tier 2: Offline NLP (Compromise.js Root Analysis when offline)
         // Tier 3: Cloud API (Public Dictionary API Fallback when online)
         // =====================================================================
+        
+        // ==========================================
+        // SOVEREIGN LOCAL ENGINE HANDLERS (Math.js & Compromise.js)
+        // ==========================================
+        function evaluateLocalMath(expression) {
+            if (typeof math !== 'undefined') {
+                try {
+                    const result = math.evaluate(expression);
+                    return `Local Math Engine: ${expression} = ${result}`;
+                } catch (e) {
+                    console.warn("[OmniStack] Math evaluation syntax error:", e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        function analyzeWordRootOffline(word) {
+            if (typeof window.nlp !== 'undefined') {
+                const doc = window.nlp(word);
+                const root = doc.verbs().out('array')[0] || doc.nouns().out('array')[0] || word;
+                return `Offline Analysis: '${word}' relates structurally to '${root}'.`;
+            }
+            return `Offline Analysis: Term '${word}' unmapped in local vault.`;
+        }
+
         async function resolveDictionaryQuery(word) {
             const cleanWord = word.toLowerCase().trim();
             if (!cleanWord) return "Please enter a valid word.";
@@ -691,16 +724,10 @@
                 }
             }
 
-            // 2. TIER 2 (OFFLINE NLP FALLBACK): Compromise.js Word-Root Analysis when offline
+            // 2. TIER 2 (OFFLINE NLP FALLBACK): Local Compromise.js Word-Root Analysis when offline
             if (!navigator.onLine) {
                 console.warn(`[OmniStack] Offline mode active. Tier 2 compromise.js fallback for: ${cleanWord}`);
-                if (typeof window.nlp !== 'undefined') {
-                    let doc = window.nlp(cleanWord);
-                    let root = doc.verbs().out('array')[0] || doc.nouns().out('array')[0] || cleanWord;
-                    return `Tier 2: Offline NLP Analysis — The term '${cleanWord}' is unmapped in the local vault, but appears structurally related to '${root}'.`;
-                } else {
-                    return `Tier 2: System Offline — Definition for '${cleanWord}' not found in local vault.`;
-                }
+                return analyzeWordRootOffline(cleanWord);
             }
 
             // 3. TIER 3 (CLOUD API): Public External Dictionary API Fallback when online
@@ -729,14 +756,12 @@
         function processTier1Offline(prompt) {
             const cleanPrompt = prompt.trim();
             const p = cleanPrompt.toLowerCase();
-            if (typeof math !== 'undefined' && (/[\d+\-*/^()=]/.test(cleanPrompt) || p.startsWith('calculate') || p.startsWith('math') || p.includes('what is'))) {
-                try {
-                    let expr = cleanPrompt.replace(/what is|calculate|math|\?/gi, '').trim();
-                    if (expr.length > 0 && /^[0-9+\-*/^() .eEsqrtabsincostanlog]+$/i.test(expr)) {
-                        const result = math.evaluate(expr);
-                        return `Neuro-Symbolic Math Engine: ${expr} = ${result}`;
-                    }
-                } catch (e) {}
+            if (/[\d+\-*/^()=]/.test(cleanPrompt) || p.startsWith('calculate') || p.startsWith('math') || p.includes('what is')) {
+                let expr = cleanPrompt.replace(/what is|calculate|math|\?/gi, '').trim();
+                if (expr.length > 0) {
+                    const mathRes = evaluateLocalMath(expr);
+                    if (mathRes) return mathRes;
+                }
             }
             if (typeof JAI_HISTORY_VAULT !== 'undefined') {
                 for (const entry of JAI_HISTORY_VAULT) {
@@ -837,12 +862,13 @@
             bindOfflineBase64Assets();
 
             function runSystemDiagnostics() {
-                console.log("=== OMNISTACK TIER 1 DIAGNOSTICS ===");
+                console.log("=== OMNISTACK SOVEREIGN DIAGNOSTICS ===");
+                console.log("Local Math.js Engine:", typeof math !== 'undefined' ? "ONLINE (Local ./math.js) ✓" : "OFFLINE ✗");
+                console.log("Local Compromise NLP:", typeof window.nlp !== 'undefined' ? "ONLINE (Local ./compromise.js) ✓" : "OFFLINE ✗");
+                console.log("Local History Vault:", typeof JAI_HISTORY_VAULT !== 'undefined' ? `ONLINE ✓ (${JAI_HISTORY_VAULT.length} entries)` : "OFFLINE ✗");
                 console.log("Offline Base64 Assets:", typeof window.JAI_ASSETS !== 'undefined' ? "ONLINE ✓" : "OFFLINE ✗");
                 console.log("Capacitor Haptic Bridge:", typeof window.JAI_HARDWARE_BRIDGE !== 'undefined' ? "ONLINE ✓" : "OFFLINE ✗");
-                console.log("Local History Vault:", typeof JAI_HISTORY_VAULT !== 'undefined' ? `ONLINE ✓ (${JAI_HISTORY_VAULT.length} entries)` : "OFFLINE ✗");
-                console.log("Local Dictionary Vault:", typeof LOCAL_DICTIONARY !== 'undefined' ? "ONLINE ✓" : "PENDING...");
-                console.log("====================================");
+                console.log("=======================================");
             }
             runSystemDiagnostics();
 
